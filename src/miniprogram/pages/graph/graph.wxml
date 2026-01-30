@@ -1,4 +1,117 @@
-<view class="temp-page">
-  <view class="temp-message">知识图谱页开发中...</view>
-  <button bindtap="goBack">返回</button>
+<!-- 知识图谱页 -->
+<view class="graph-container">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar" style="padding-top: {{statusBarHeight + 10}}px;">
+    <button class="nav-button" bindtap="goBack" hover-class="nav-button-hover">
+      <image class="nav-icon" src="/assets/icons/chevron-left-white.svg" mode="aspectFit" />
+    </button>
+    <view class="nav-title">知识图谱</view>
+    <view class="nav-placeholder"></view>
+  </view>
+
+  <!-- 滚动内容区域 -->
+  <scroll-view class="content-scroll" scroll-y>
+    <!-- 中心建筑卡片 -->
+    <view class="center-node">
+      <view class="node-card building-node">
+        <view class="node-icon">🏛</view>
+        <view class="node-info">
+          <view class="node-title">{{building.name}}</view>
+          <view class="node-subtitle">{{building.city}}</view>
+        </view>
+        <view class="node-badge">中心</view>
+      </view>
+    </view>
+
+    <!-- 关系网络图示 -->
+    <view class="relation-lines">
+      <view class="line line-top-left"></view>
+      <view class="line line-top-right"></view>
+      <view class="line line-bottom-left"></view>
+      <view class="line line-bottom-right"></view>
+    </view>
+
+    <!-- 相关人物 -->
+    <view class="section" wx:if="{{building.relatedPeople && building.relatedPeople.length > 0}}">
+      <view class="section-header">
+        <view class="section-icon">👤</view>
+        <view class="section-title">相关人物</view>
+        <view class="section-count">{{building.relatedPeople.length}}</view>
+      </view>
+      <view class="person-list">
+        <view class="person-card" wx:for="{{building.relatedPeople}}" wx:key="name">
+          <view class="person-avatar">{{item.avatar}}</view>
+          <view class="person-info">
+            <view class="person-name">{{item.name}}</view>
+            <view class="person-role">{{item.role}}</view>
+            <view class="person-desc">{{item.description}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 重要事件 -->
+    <view class="section" wx:if="{{building.relatedEvents && building.relatedEvents.length > 0}}">
+      <view class="section-header">
+        <view class="section-icon">📅</view>
+        <view class="section-title">重要事件</view>
+        <view class="section-count">{{building.relatedEvents.length}}</view>
+      </view>
+      <view class="event-list">
+        <view class="event-card" wx:for="{{building.relatedEvents}}" wx:key="date">
+          <view class="event-date">{{item.date}}</view>
+          <view class="event-content">
+            <view class="event-title">{{item.title}}</view>
+            <view class="event-desc">{{item.description}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 关联建筑 -->
+    <view class="section" wx:if="{{building.relatedBuildings && building.relatedBuildings.length > 0}}">
+      <view class="section-header">
+        <view class="section-icon">🏛</view>
+        <view class="section-title">关联建筑</view>
+        <view class="section-count">{{building.relatedBuildings.length}}</view>
+      </view>
+      <view class="building-list">
+        <view
+          class="building-card"
+          wx:for="{{building.relatedBuildings}}"
+          wx:key="id"
+          bindtap="goToBuilding"
+          data-id="{{item.id}}"
+        >
+          <image class="building-image" src="{{item.image}}" mode="aspectFill" />
+          <view class="building-info">
+            <view class="building-name">{{item.name}}</view>
+            <view class="building-relation">{{item.relation}}</view>
+          </view>
+          <image class="arrow-icon" src="/assets/icons/chevron-right-gray.svg" mode="aspectFit" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 时间线 -->
+    <view class="section" wx:if="{{building.timeline && building.timeline.length > 0}}">
+      <view class="section-header">
+        <view class="section-icon">⏱</view>
+        <view class="section-title">历史时间线</view>
+      </view>
+      <view class="timeline">
+        <view class="timeline-item" wx:for="{{building.timeline}}" wx:key="year">
+          <view class="timeline-dot"></view>
+          <view class="timeline-line" wx:if="{{index < building.timeline.length - 1}}"></view>
+          <view class="timeline-content">
+            <view class="timeline-year">{{item.year}}</view>
+            <view class="timeline-event">{{item.event}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部占位 -->
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
 </view>

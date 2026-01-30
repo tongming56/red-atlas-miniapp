@@ -26,8 +26,11 @@
     <!-- 关系网络图 (Obsidian风格) -->
     <view class="relation-graph">
       <view class="graph-header">
-        <text class="graph-title">知识图谱</text>
-        <text class="graph-subtitle">共 {{graphNodeCount}} 个节点</text>
+        <view>
+          <text class="graph-title">知识图谱</text>
+          <text class="graph-hint">👆 长按拖动节点</text>
+        </view>
+        <text class="graph-subtitle">{{graphNodeCount}} 个节点</text>
       </view>
 
       <!-- Canvas 画布 -->
@@ -43,19 +46,19 @@
       <view class="graph-legend">
         <view class="legend-item">
           <view class="legend-dot legend-center"></view>
-          <text class="legend-text">当前建筑</text>
+          <text class="legend-text">建筑 🏛</text>
         </view>
         <view class="legend-item">
           <view class="legend-dot legend-people"></view>
-          <text class="legend-text">相关人物</text>
+          <text class="legend-text">人物 👤</text>
         </view>
         <view class="legend-item">
           <view class="legend-dot legend-event"></view>
-          <text class="legend-text">历史事件</text>
+          <text class="legend-text">事件 📅</text>
         </view>
         <view class="legend-item">
           <view class="legend-dot legend-building"></view>
-          <text class="legend-text">关联建筑</text>
+          <text class="legend-text">关联 🏛</text>
         </view>
       </view>
     </view>

@@ -485,11 +485,17 @@ Page({
     const x = touch.x
     const y = touch.y
 
+    // 节流：每16ms（约60fps）绘制一次
+    const now = Date.now()
+    if (now - this.data.lastDrawTime < 16) return
+
+    this.data.lastDrawTime = now
+
     // 计算移动距离
     const deltaX = x - this.data.lastTouchX
     const deltaY = y - this.data.lastTouchY
 
-    // 更新节点位置
+    // 直接更新内存中的节点位置（不调用setData）
     const nodes = this.data.nodes
     const nodeIndex = this.data.dragNodeIndex
     nodes[nodeIndex].x += deltaX
@@ -501,18 +507,12 @@ Page({
     node.x = Math.max(margin, Math.min(this.data.canvasWidth - margin, node.x))
     node.y = Math.max(margin, Math.min(this.data.canvasHeight - margin, node.y))
 
-    this.setData({
-      nodes,
-      lastTouchX: x,
-      lastTouchY: y
-    })
+    // 更新触摸位置（不调用setData）
+    this.data.lastTouchX = x
+    this.data.lastTouchY = y
 
-    // 节流：每16ms（约60fps）绘制一次
-    const now = Date.now()
-    if (now - this.data.lastDrawTime > 16) {
-      this.data.lastDrawTime = now
-      this.drawKnowledgeGraphFast() // 使用快速绘制模式
-    }
+    // 使用极简绘制模式
+    this.drawKnowledgeGraphFast()
   },
 
   /**
@@ -520,54 +520,60 @@ Page({
    */
   handleTouchEnd(e) {
     if (this.data.isDragging) {
-      // 拖动结束，重新绘制完整版本
-      this.drawKnowledgeGraph()
+      // 拖动结束，更新数据并重新绘制完整版本
+      this.setData({
+        nodes: this.data.nodes,
+        isDragging: false,
+        dragNodeIndex: -1
+      }, () => {
+        this.drawKnowledgeGraph()
+      })
+    } else {
+      this.setData({
+        isDragging: false,
+        dragNodeIndex: -1
+      })
     }
-
-    this.setData({
-      isDragging: false,
-      dragNodeIndex: -1
-    })
   },
 
   /**
-   * 快速绘制模式（拖动时使用，减少细节）
+   * 快速绘制模式（拖动时使用，极简版本）
    */
   drawKnowledgeGraphFast() {
     const ctx = wx.createCanvasContext('knowledgeGraph', this)
-    const { canvasWidth, canvasHeight, nodes } = this.data
+    const { canvasWidth, canvasHeight, nodes, dragNodeIndex } = this.data
 
-    // 清空画布
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+    // 完全清空画布（使用draw而不是clearRect）
+    ctx.setFillStyle('#0D0D0D')
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight)
 
-    // 1. 绘制连接线（简化版）
+    // 1. 绘制所有连接线（最简化，一次性绘制）
+    ctx.beginPath()
     ctx.setLineCap('round')
-    nodes.forEach((node, index) => {
-      if (index === 0) return
-      ctx.beginPath()
+    ctx.setStrokeStyle('rgba(183, 28, 28, 0.15)')
+    ctx.setLineWidth(1.5)
+    for (let i = 1; i < nodes.length; i++) {
       ctx.moveTo(nodes[0].x, nodes[0].y)
-      ctx.lineTo(node.x, node.y)
-      ctx.setStrokeStyle('rgba(183, 28, 28, 0.2)')
-      ctx.setLineWidth(2)
-      ctx.stroke()
-    })
+      ctx.lineTo(nodes[i].x, nodes[i].y)
+    }
+    ctx.stroke()
 
-    // 2. 绘制节点（简化版，不绘制文字）
+    // 2. 绘制所有节点（批量绘制，减少API调用）
     nodes.forEach((node) => {
-      // 绘制节点圆圈
+      // 节点填充
       ctx.beginPath()
       ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2)
       ctx.setFillStyle(node.color)
       ctx.fill()
 
-      // 绘制节点边框
+      // 节点边框
       ctx.beginPath()
       ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2)
       ctx.setStrokeStyle('#FFFFFF')
-      ctx.setLineWidth(3)
+      ctx.setLineWidth(2)
       ctx.stroke()
 
-      // 只绘制图标
+      // 图标
       ctx.setFontSize(node.type === 'center' ? 20 : 16)
       ctx.setFillStyle('#FFFFFF')
       ctx.setTextAlign('center')
@@ -575,8 +581,8 @@ Page({
       ctx.fillText(node.icon, node.x, node.y)
     })
 
-    // 使用 reserve 参数提高性能
-    ctx.draw(true)
+    // 非增量绘制，避免闪烁
+    ctx.draw()
   },
 
   /**

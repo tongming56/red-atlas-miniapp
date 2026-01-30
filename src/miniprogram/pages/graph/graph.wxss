@@ -158,15 +158,26 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* Canvas 画布 */
-.graph-canvas {
-  display: block;
+/* Canvas 画布容器 */
+.graph-canvas-wrapper {
   width: 100%;
   height: 1000rpx;
   background: #0D0D0D;
   border-radius: 16rpx;
   margin-bottom: 24rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Canvas 画布 */
+.graph-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
   touch-action: none;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 /* 图例 */

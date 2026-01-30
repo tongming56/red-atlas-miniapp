@@ -325,20 +325,29 @@ Page({
 
       // 计算周边节点位置（圆形分布）
       let angle = 0
-      const radius = 180 // 分布半径
+      const radius = 150 // 分布半径（减小以避免溢出）
 
       // 添加人物节点
       if (building.relatedPeople && building.relatedPeople.length > 0) {
         building.relatedPeople.forEach((person, index) => {
           angle = (Math.PI * 2 / this.data.graphNodeCount) * (index + 1)
+          const x = centerX + Math.cos(angle) * radius
+          const y = centerY + Math.sin(angle) * radius
+
+          // 边界约束（考虑节点半径和文字标签高度）
+          const nodeRadius = 25
+          const textHeight = 50 // 文字标签需要的额外空间
+          const safeX = Math.max(nodeRadius + 10, Math.min(canvasWidth - nodeRadius - 10, x))
+          const safeY = Math.max(nodeRadius + 20, Math.min(canvasHeight - textHeight, y))
+
           nodes.push({
             type: 'people',
             typeLabel: '人物',
             label: person.name,
             role: person.role,
-            x: centerX + Math.cos(angle) * radius,
-            y: centerY + Math.sin(angle) * radius,
-            radius: 25,
+            x: safeX,
+            y: safeY,
+            radius: nodeRadius,
             color: '#3B82F6',
             icon: '👤'
           })
@@ -350,14 +359,23 @@ Page({
         const offset = (building.relatedPeople?.length || 0) + 1
         building.relatedEvents.forEach((event, index) => {
           angle = (Math.PI * 2 / this.data.graphNodeCount) * (offset + index)
+          const x = centerX + Math.cos(angle) * radius
+          const y = centerY + Math.sin(angle) * radius
+
+          // 边界约束（考虑节点半径和文字标签高度）
+          const nodeRadius = 25
+          const textHeight = 50
+          const safeX = Math.max(nodeRadius + 10, Math.min(canvasWidth - nodeRadius - 10, x))
+          const safeY = Math.max(nodeRadius + 20, Math.min(canvasHeight - textHeight, y))
+
           nodes.push({
             type: 'event',
             typeLabel: '事件',
             label: event.title,
             date: event.date,
-            x: centerX + Math.cos(angle) * radius,
-            y: centerY + Math.sin(angle) * radius,
-            radius: 25,
+            x: safeX,
+            y: safeY,
+            radius: nodeRadius,
             color: '#10B981',
             icon: '📅'
           })
@@ -369,14 +387,23 @@ Page({
         const offset = (building.relatedPeople?.length || 0) + (building.relatedEvents?.length || 0) + 1
         building.relatedBuildings.forEach((bld, index) => {
           angle = (Math.PI * 2 / this.data.graphNodeCount) * (offset + index)
+          const x = centerX + Math.cos(angle) * radius
+          const y = centerY + Math.sin(angle) * radius
+
+          // 边界约束（考虑节点半径和文字标签高度）
+          const nodeRadius = 25
+          const textHeight = 50
+          const safeX = Math.max(nodeRadius + 10, Math.min(canvasWidth - nodeRadius - 10, x))
+          const safeY = Math.max(nodeRadius + 20, Math.min(canvasHeight - textHeight, y))
+
           nodes.push({
             type: 'building',
             typeLabel: '建筑',
             label: bld.name,
             relation: bld.relation,
-            x: centerX + Math.cos(angle) * radius,
-            y: centerY + Math.sin(angle) * radius,
-            radius: 25,
+            x: safeX,
+            y: safeY,
+            radius: nodeRadius,
             color: '#F59E0B',
             icon: '🏛'
           })
@@ -532,11 +559,14 @@ Page({
     nodes[nodeIndex].x += deltaX
     nodes[nodeIndex].y += deltaY
 
-    // 边界限制
+    // 边界限制（考虑文字标签高度）
     const node = nodes[nodeIndex]
-    const margin = node.radius + 10
-    node.x = Math.max(margin, Math.min(this.canvasWidth - margin, node.x))
-    node.y = Math.max(margin, Math.min(this.canvasHeight - margin, node.y))
+    const marginX = node.radius + 10
+    const marginTop = node.radius + 20  // 上方留出类型标签空间
+    const marginBottom = 50             // 下方留出名称和额外信息空间
+
+    node.x = Math.max(marginX, Math.min(this.canvasWidth - marginX, node.x))
+    node.y = Math.max(marginTop, Math.min(this.canvasHeight - marginBottom, node.y))
 
     // 更新触摸位置（不调用setData）
     this.data.lastTouchX = x

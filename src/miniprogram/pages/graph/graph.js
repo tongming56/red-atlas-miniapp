@@ -485,12 +485,6 @@ Page({
     const x = touch.x
     const y = touch.y
 
-    // 节流：每16ms（约60fps）绘制一次
-    const now = Date.now()
-    if (now - this.data.lastDrawTime < 16) return
-
-    this.data.lastDrawTime = now
-
     // 计算移动距离
     const deltaX = x - this.data.lastTouchX
     const deltaY = y - this.data.lastTouchY
@@ -511,7 +505,7 @@ Page({
     this.data.lastTouchX = x
     this.data.lastTouchY = y
 
-    // 使用极简绘制模式
+    // 立即绘制，不节流
     this.drawKnowledgeGraphFast()
   },
 
@@ -537,40 +531,63 @@ Page({
   },
 
   /**
-   * 快速绘制模式（拖动时使用，极简版本）
+   * 快速绘制模式（拖动时使用，超简版本）
    */
   drawKnowledgeGraphFast() {
-    const ctx = wx.createCanvasContext('knowledgeGraph', this)
+    // 获取或创建canvas context（缓存提升性能）
+    if (!this.canvasCtx) {
+      this.canvasCtx = wx.createCanvasContext('knowledgeGraph', this)
+    }
+    const ctx = this.canvasCtx
     const { canvasWidth, canvasHeight, nodes, dragNodeIndex } = this.data
 
-    // 完全清空画布（使用draw而不是clearRect）
+    // 清空画布
     ctx.setFillStyle('#0D0D0D')
     ctx.fillRect(0, 0, canvasWidth, canvasHeight)
 
-    // 1. 绘制所有连接线（最简化，一次性绘制）
-    ctx.beginPath()
-    ctx.setLineCap('round')
-    ctx.setStrokeStyle('rgba(183, 28, 28, 0.15)')
-    ctx.setLineWidth(1.5)
-    for (let i = 1; i < nodes.length; i++) {
+    // 1. 只绘制被拖动节点相关的连接线
+    if (dragNodeIndex === 0) {
+      // 如果拖动的是中心节点，绘制所有连接线
+      ctx.beginPath()
+      ctx.setStrokeStyle('rgba(183, 28, 28, 0.2)')
+      ctx.setLineWidth(1.5)
+      for (let i = 1; i < nodes.length; i++) {
+        ctx.moveTo(nodes[0].x, nodes[0].y)
+        ctx.lineTo(nodes[i].x, nodes[i].y)
+      }
+      ctx.stroke()
+    } else if (dragNodeIndex > 0) {
+      // 如果拖动的是其他节点，只绘制它到中心的连接线
+      ctx.beginPath()
       ctx.moveTo(nodes[0].x, nodes[0].y)
-      ctx.lineTo(nodes[i].x, nodes[i].y)
-    }
-    ctx.stroke()
+      ctx.lineTo(nodes[dragNodeIndex].x, nodes[dragNodeIndex].y)
+      ctx.setStrokeStyle('rgba(183, 28, 28, 0.2)')
+      ctx.setLineWidth(1.5)
+      ctx.stroke()
 
-    // 2. 绘制所有节点（批量绘制，减少API调用）
-    nodes.forEach((node) => {
-      // 节点填充
+      // 绘制其他节点的静态连接线（更淡）
+      ctx.beginPath()
+      ctx.setStrokeStyle('rgba(183, 28, 28, 0.1)')
+      ctx.setLineWidth(1)
+      for (let i = 1; i < nodes.length; i++) {
+        if (i === dragNodeIndex) continue
+        ctx.moveTo(nodes[0].x, nodes[0].y)
+        ctx.lineTo(nodes[i].x, nodes[i].y)
+      }
+      ctx.stroke()
+    }
+
+    // 2. 绘制所有节点（批量绘制）
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i]
+
+      // 节点填充和边框一起绘制
       ctx.beginPath()
       ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2)
       ctx.setFillStyle(node.color)
       ctx.fill()
-
-      // 节点边框
-      ctx.beginPath()
-      ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2)
       ctx.setStrokeStyle('#FFFFFF')
-      ctx.setLineWidth(2)
+      ctx.setLineWidth(i === dragNodeIndex ? 3 : 2)
       ctx.stroke()
 
       // 图标
@@ -579,9 +596,9 @@ Page({
       ctx.setTextAlign('center')
       ctx.setTextBaseline('middle')
       ctx.fillText(node.icon, node.x, node.y)
-    })
+    }
 
-    // 非增量绘制，避免闪烁
+    // 使用draw()立即渲染
     ctx.draw()
   },
 

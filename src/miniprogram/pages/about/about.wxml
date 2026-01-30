@@ -1,0 +1,4 @@
+<view class="temp-page">
+  <view class="temp-message">关于页开发中...</view>
+  <button bindtap="goBack">返回</button>
+</view>

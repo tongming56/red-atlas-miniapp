@@ -1,0 +1,73 @@
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120rpx;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  padding-bottom: 8rpx;
+  padding-bottom: calc(8rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.05);
+  z-index: 999;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 8rpx;
+  position: relative;
+}
+
+.tab-icon-box {
+  width: 48rpx;
+  height: 48rpx;
+  margin-bottom: 4rpx;
+}
+
+.tab-icon {
+  width: 100%;
+  height: 100%;
+}
+
+.tab-text {
+  font-size: 20rpx;
+  font-weight: 500;
+}
+
+/* 中间凸起的扫码按钮 */
+.scan-button-wrapper {
+  position: absolute;
+  bottom: 20rpx;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.scan-button {
+  width: 120rpx;
+  height: 120rpx;
+  background: linear-gradient(135deg, #D32F2F 0%, #B71C1C 100%);
+  border-radius: 50%;
+  box-shadow: 0 8rpx 24rpx rgba(183, 28, 28, 0.4), 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  border: 8rpx solid #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.scan-button:active {
+  transform: scale(0.93);
+}
+
+.scan-text {
+  color: #FFFFFF;
+  font-size: 32rpx;
+  font-weight: 600;
+  letter-spacing: 2rpx;
+}

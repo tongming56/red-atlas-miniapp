@@ -1,0 +1,35 @@
+<!-- 底部导航栏组件 -->
+<view class="bottom-nav safe-area-bottom">
+  <view class="nav-container">
+    <!-- 首页按钮 -->
+    <view class="nav-item" bindtap="goToHome">
+      <view class="nav-icon-wrapper">
+        <image 
+          class="nav-icon" 
+          src="{{activePage === 'index' ? '/assets/icons/home-fill.svg' : '/assets/icons/home.svg'}}" 
+          mode="aspectFit"
+        />
+      </view>
+      <text class="nav-text {{activePage === 'index' ? 'active' : ''}}">首页</text>
+    </view>
+
+    <!-- 扫码按钮（中央凸起） -->
+    <view class="nav-item nav-item-center" bindtap="goToScan">
+      <view class="scan-button">
+        <text class="scan-text">扫码</text>
+      </view>
+    </view>
+
+    <!-- 收藏按钮 -->
+    <view class="nav-item" bindtap="goToFavorites">
+      <view class="nav-icon-wrapper">
+        <image 
+          class="nav-icon" 
+          src="{{activePage === 'favorites' ? '/assets/icons/heart-fill.svg' : '/assets/icons/heart.svg'}}" 
+          mode="aspectFit"
+        />
+      </view>
+      <text class="nav-text {{activePage === 'favorites' ? 'active' : ''}}">收藏</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,88 @@
+<!-- 首页 -->
+<view class="page-container">
+  <!-- 顶部标题栏 -->
+  <view class="header" style="padding-top: {{statusBarHeight + 28}}rpx;">
+    <view class="header-content">
+      <view class="title-wrapper">
+        <text class="title">福建红色图谱</text>
+        <text class="subtitle">Revolutionary Heritage Map</text>
+      </view>
+      <view class="placeholder"></view>
+    </view>
+
+    <!-- 搜索栏和扫码按钮 -->
+    <view class="search-bar">
+      <view class="search-input" bindtap="goToSearch">
+        <image class="search-icon" src="/assets/icons/search.svg" mode="aspectFit" />
+        <text class="search-placeholder">搜索革命遗址、纪念馆...</text>
+      </view>
+      <view class="map-button" bindtap="goToMap">
+        <image class="map-icon" src="/assets/icons/map-white.svg" mode="aspectFit" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 地区筛选栏 -->
+  <view class="region-filter">
+    <scroll-view class="region-scroll" scroll-x>
+      <view class="region-list">
+        <view 
+          wx:for="{{regions}}" 
+          wx:key="*this"
+          class="region-item {{activeRegion === item ? 'active' : ''}}"
+          bindtap="changeRegion"
+          data-region="{{item}}"
+        >
+          {{item}}
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 主内容区 -->
+  <scroll-view class="main-content" scroll-y>
+    <view class="building-list">
+      <view 
+        wx:for="{{buildings}}" 
+        wx:key="id"
+        class="building-card active-scale"
+        bindtap="goToDetail"
+        data-id="{{item.id}}"
+      >
+        <!-- 图片区域 -->
+        <view class="card-image-wrapper">
+          <image class="card-image" src="{{item.image}}" mode="aspectFill" />
+          <view class="card-badge">
+            <text class="badge-text">{{item.id}}</text>
+          </view>
+        </view>
+
+        <!-- 内容区域 -->
+        <view class="card-content">
+          <view class="card-title-wrapper">
+            <view class="title-dot"></view>
+            <text class="card-title">{{item.name}}</text>
+          </view>
+          <view class="card-location">
+            <image class="location-icon" src="/assets/icons/location-red.svg" mode="aspectFit" />
+            <text class="location-text">{{item.city}}</text>
+          </view>
+          <!-- 标签区域 -->
+          <view class="card-tags">
+            <text 
+              wx:for="{{item.tags}}" 
+              wx:key="*this"
+              wx:for-item="tag"
+              class="tag {{index === 0 ? 'tag-red' : 'tag-gray'}}"
+            >
+              {{tag}}
+            </text>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 底部占位 -->
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+</view>

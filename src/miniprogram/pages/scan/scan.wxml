@@ -1,0 +1,89 @@
+<!-- 扫码页 -->
+<view class="page-container">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar" style="padding-top: {{statusBarHeight + 10}}rpx;">
+    <view class="nav-content">
+      <view class="nav-back" bindtap="goBack">
+        <image class="back-icon" src="/assets/icons/arrow-left.svg" mode="aspectFit" />
+      </view>
+      <text class="nav-title">扫码识别建筑</text>
+      <view class="nav-placeholder"></view>
+    </view>
+  </view>
+
+  <!-- 主内容区 -->
+  <scroll-view class="main-content" scroll-y>
+    <!-- 扫码提示区域 -->
+    <view class="scan-section">
+      <view class="scan-icon-wrapper">
+        <image class="scan-icon" src="/assets/icons/qr-code-large.svg" mode="aspectFit" />
+        <view class="scan-line"></view>
+      </view>
+      <text class="scan-title">将镜头对准建筑标识牌</text>
+      <text class="scan-subtitle">支持二维码、建筑外观等多种识别方式</text>
+      <button class="scan-button" bindtap="startScan">
+        <image class="scan-button-icon" src="/assets/icons/camera-white.svg" mode="aspectFit" />
+        <text class="scan-button-text">开始扫码</text>
+      </button>
+    </view>
+
+    <!-- 识别历史 -->
+    <view class="history-section">
+      <view class="history-header">
+        <view class="header-left">
+          <view class="header-dot"></view>
+          <text class="header-title">识别历史</text>
+        </view>
+        <text class="header-action" bindtap="clearHistory">清空</text>
+      </view>
+
+      <!-- 历史列表 -->
+      <view class="history-list">
+        <view 
+          wx:for="{{scanHistory}}" 
+          wx:key="id"
+          class="history-item active-scale"
+          bindtap="goToDetail"
+          data-id="{{item.id}}"
+        >
+          <!-- 图片 -->
+          <view class="history-image-wrapper">
+            <image class="history-image" src="{{item.image}}" mode="aspectFill" />
+          </view>
+
+          <!-- 内容 -->
+          <view class="history-content">
+            <view class="content-top">
+              <text class="history-name">{{item.name}}</text>
+              <text class="history-name-en">{{item.nameEn}}</text>
+            </view>
+            <view class="content-bottom">
+              <view class="history-location">
+                <image class="location-icon" src="/assets/icons/location-gray.svg" mode="aspectFit" />
+                <text class="location-text">{{item.location}}</text>
+              </view>
+              <view class="history-time {{item.timeClass}}">
+                {{item.time}}
+              </view>
+            </view>
+          </view>
+
+          <!-- 箭头 -->
+          <view class="history-arrow">
+            <image class="arrow-icon" src="/assets/icons/chevron-right-gray.svg" mode="aspectFit" />
+          </view>
+        </view>
+
+        <!-- 空状态 -->
+        <view wx:if="{{scanHistory.length === 0}}" class="empty-state">
+          <image class="empty-icon" src="/assets/icons/scan-empty.svg" mode="aspectFit" />
+          <text class="empty-text">暂无扫码记录</text>
+          <text class="empty-hint">快去扫描建筑标识牌吧</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部占位 -->
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+</view>

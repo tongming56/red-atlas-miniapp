@@ -1,0 +1,89 @@
+<!-- 搜索页 -->
+<view class="page-container">
+  <!-- 搜索栏 -->
+  <view class="search-bar" style="padding-top: {{statusBarHeight + 10}}rpx;">
+    <view class="search-input-wrapper">
+      <image class="search-icon" src="/assets/icons/search.svg" mode="aspectFit" />
+      <input 
+        class="search-input" 
+        type="text" 
+        placeholder="搜索革命遗址、纪念馆..."
+        placeholder-style="color: #9CA3AF;"
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        focus="{{true}}"
+      />
+      <view wx:if="{{searchKeyword}}" class="clear-button" bindtap="clearSearch">
+        <image class="clear-icon" src="/assets/icons/close-circle.svg" mode="aspectFit" />
+      </view>
+    </view>
+    <text class="cancel-button" bindtap="goBack">取消</text>
+  </view>
+
+  <!-- 主内容区 -->
+  <scroll-view class="main-content" scroll-y>
+    <!-- 热门搜索 -->
+    <view wx:if="{{!searchKeyword}}" class="hot-search">
+      <view class="section-header">
+        <view class="header-dot"></view>
+        <text class="header-title">热门搜索</text>
+      </view>
+      <view class="hot-tags">
+        <text 
+          wx:for="{{hotKeywords}}" 
+          wx:key="*this"
+          class="hot-tag"
+          bindtap="selectHotKeyword"
+          data-keyword="{{item}}"
+        >
+          {{item}}
+        </text>
+      </view>
+    </view>
+
+    <!-- 搜索结果 -->
+    <view wx:if="{{searchKeyword}}" class="search-results">
+      <view class="results-header">
+        <text class="results-count">找到 {{searchResults.length}} 个结果</text>
+      </view>
+      
+      <view class="results-list">
+        <view 
+          wx:for="{{searchResults}}" 
+          wx:key="id"
+          class="result-item active-scale"
+          bindtap="goToDetail"
+          data-id="{{item.id}}"
+        >
+          <view class="item-image-wrapper">
+            <image class="item-image" src="{{item.image}}" mode="aspectFill" />
+          </view>
+          <view class="item-content">
+            <text class="item-name">{{item.name}}</text>
+            <view class="item-location">
+              <image class="location-icon" src="/assets/icons/location-red.svg" mode="aspectFit" />
+              <text class="location-text">{{item.city}}</text>
+            </view>
+            <view class="item-tags">
+              <text 
+                wx:for="{{item.tags}}" 
+                wx:key="*this"
+                wx:for-item="tag"
+                class="tag {{index === 0 ? 'tag-red' : 'tag-gray'}}"
+              >
+                {{tag}}
+              </text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view wx:if="{{searchResults.length === 0}}" class="empty-state">
+        <image class="empty-icon" src="/assets/icons/search-empty.svg" mode="aspectFit" />
+        <text class="empty-text">未找到相关结果</text>
+        <text class="empty-hint">试试其他关键词吧</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>

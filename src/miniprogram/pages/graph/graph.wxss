@@ -1,0 +1,14 @@
+.temp-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #F8F9FA;
+}
+
+.temp-message {
+  font-size: 36rpx;
+  color: #B71C1C;
+  margin-bottom: 32rpx;
+}

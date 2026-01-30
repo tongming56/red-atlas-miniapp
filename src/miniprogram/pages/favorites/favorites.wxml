@@ -1,0 +1,84 @@
+<!-- 收藏页 -->
+<view class="page-container">
+  <!-- 红色顶部栏 -->
+  <view class="header" style="padding-top: {{statusBarHeight + 24}}rpx;">
+    <view class="header-content">
+      <view class="back-button" bindtap="goBack">
+        <image class="back-icon" src="/assets/icons/chevron-left-white.svg" mode="aspectFit" />
+      </view>
+      <text class="header-title">我的关注</text>
+      <view class="header-placeholder"></view>
+    </view>
+  </view>
+
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
+    <view class="filter-left">
+      <view 
+        class="filter-item {{activeFilter === '全部' ? 'active' : ''}}"
+        bindtap="changeFilter"
+        data-filter="全部"
+      >
+        全部
+      </view>
+      <view 
+        class="filter-item {{activeFilter === '最近添加' ? 'active' : ''}}"
+        bindtap="changeFilter"
+        data-filter="最近添加"
+      >
+        最近添加
+      </view>
+    </view>
+    <text class="manage-button">管理</text>
+  </view>
+
+  <!-- 主内容区 -->
+  <scroll-view class="main-content" scroll-y>
+    <view class="favorites-list">
+      <view 
+        wx:for="{{favorites}}" 
+        wx:key="id"
+        class="favorite-card active-scale"
+        bindtap="goToDetail"
+        data-id="{{item.id}}"
+      >
+        <!-- 图片 -->
+        <view class="card-image-wrapper">
+          <image class="card-image" src="{{item.image}}" mode="aspectFill" />
+        </view>
+
+        <!-- 内容 -->
+        <view class="card-content">
+          <view class="content-top">
+            <text class="card-name">{{item.name}}</text>
+            <view class="card-location">
+              <image class="location-icon" src="/assets/icons/location-gray.svg" mode="aspectFit" />
+              <text class="location-text">{{item.location}}</text>
+            </view>
+          </view>
+          <view class="content-bottom">
+            <view class="time-tag">{{item.time}}</view>
+          </view>
+        </view>
+
+        <!-- 收藏按钮 -->
+        <view class="favorite-button" catchtap="toggleFavorite" data-id="{{item.id}}">
+          <image class="heart-icon" src="/assets/icons/heart-fill-red.svg" mode="aspectFit" />
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view wx:if="{{favorites.length === 0}}" class="empty-state">
+        <image class="empty-icon" src="/assets/icons/bookmark-empty.svg" mode="aspectFit" />
+        <text class="empty-title">暂无收藏</text>
+        <text class="empty-hint">快去探索红色地图，收藏你感兴趣的遗址吧</text>
+        <button class="explore-button" bindtap="goToExplore">
+          去探索
+        </button>
+      </view>
+    </view>
+
+    <!-- 底部占位 -->
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+</view>

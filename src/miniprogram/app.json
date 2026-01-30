@@ -1,0 +1,54 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/scan/scan",
+    "pages/search/search",
+    "pages/detail/detail",
+    "pages/model3d/model3d",
+    "pages/graph/graph",
+    "pages/map/map",
+    "pages/favorites/favorites",
+    "pages/about/about"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#B71C1C",
+    "navigationBarTitleText": "福建红色图谱",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F8F9FA",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#9CA3AF",
+    "selectedColor": "#B71C1C",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "assets/icons/home.png",
+        "selectedIconPath": "assets/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/scan/scan",
+        "text": "扫码",
+        "iconPath": "assets/icons/scan.png",
+        "selectedIconPath": "assets/icons/scan-active.png"
+      },
+      {
+        "pagePath": "pages/favorites/favorites",
+        "text": "收藏",
+        "iconPath": "assets/icons/favorite.png",
+        "selectedIconPath": "assets/icons/favorite-active.png"
+      }
+    ]
+  },
+  "usingComponents": {
+    "bottom-nav": "/components/bottom-nav/bottom-nav"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

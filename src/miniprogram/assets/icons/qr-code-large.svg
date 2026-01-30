@@ -1,0 +1,29 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 外框 -->
+  <rect x="10" y="10" width="100" height="100" stroke="#B71C1C" stroke-width="3" fill="none"/>
+
+  <!-- 左上角定位点 -->
+  <rect x="20" y="20" width="30" height="30" fill="#B71C1C"/>
+  <rect x="25" y="25" width="20" height="20" fill="white"/>
+  <rect x="30" y="30" width="10" height="10" fill="#B71C1C"/>
+
+  <!-- 右上角定位点 -->
+  <rect x="70" y="20" width="30" height="30" fill="#B71C1C"/>
+  <rect x="75" y="25" width="20" height="20" fill="white"/>
+  <rect x="80" y="30" width="10" height="10" fill="#B71C1C"/>
+
+  <!-- 左下角定位点 -->
+  <rect x="20" y="70" width="30" height="30" fill="#B71C1C"/>
+  <rect x="25" y="75" width="20" height="20" fill="white"/>
+  <rect x="30" y="80" width="10" height="10" fill="#B71C1C"/>
+
+  <!-- 数据区域（装饰性方块） -->
+  <rect x="60" y="60" width="8" height="8" fill="#B71C1C"/>
+  <rect x="70" y="60" width="8" height="8" fill="#B71C1C"/>
+  <rect x="60" y="70" width="8" height="8" fill="#B71C1C"/>
+  <rect x="80" y="70" width="8" height="8" fill="#B71C1C"/>
+  <rect x="90" y="70" width="8" height="8" fill="#B71C1C"/>
+  <rect x="70" y="80" width="8" height="8" fill="#B71C1C"/>
+  <rect x="90" y="80" width="8" height="8" fill="#B71C1C"/>
+  <rect x="80" y="90" width="8" height="8" fill="#B71C1C"/>
+</svg>

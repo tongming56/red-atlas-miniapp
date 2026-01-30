@@ -21,7 +21,8 @@ Page({
     isDragging: false,
     dragNodeIndex: -1,
     lastTouchX: 0,
-    lastTouchY: 0
+    lastTouchY: 0,
+    lastDrawTime: 0 // 上次绘制时间（用于节流）
   },
 
   onLoad(options) {
@@ -364,10 +365,21 @@ Page({
 
     // 2. 绘制节点
     nodes.forEach((node) => {
-      // 绘制外圈光晕
+      // 绘制外圈光晕（使用rgba格式）
+      let glowColor
+      if (node.color === '#D41111') {
+        glowColor = 'rgba(212, 17, 17, 0.125)'
+      } else if (node.color === '#3B82F6') {
+        glowColor = 'rgba(59, 130, 246, 0.125)'
+      } else if (node.color === '#10B981') {
+        glowColor = 'rgba(16, 185, 129, 0.125)'
+      } else if (node.color === '#F59E0B') {
+        glowColor = 'rgba(245, 158, 11, 0.125)'
+      }
+
       ctx.beginPath()
       ctx.arc(node.x, node.y, node.radius + 6, 0, Math.PI * 2)
-      ctx.setFillStyle(node.color + '20') // 添加透明度
+      ctx.setFillStyle(glowColor)
       ctx.fill()
 
       // 绘制节点圆圈
@@ -430,8 +442,8 @@ Page({
       }
     })
 
-    // 绘制到屏幕
-    ctx.draw()
+    // 绘制到屏幕（使用 reserve 参数提高性能）
+    ctx.draw(false)
   },
 
   /**
@@ -464,7 +476,7 @@ Page({
   },
 
   /**
-   * 触摸移动
+   * 触摸移动（优化性能）
    */
   handleTouchMove(e) {
     if (!this.data.isDragging || this.data.dragNodeIndex < 0) return
@@ -495,8 +507,12 @@ Page({
       lastTouchY: y
     })
 
-    // 重新绘制
-    this.drawKnowledgeGraph()
+    // 节流：每16ms（约60fps）绘制一次
+    const now = Date.now()
+    if (now - this.data.lastDrawTime > 16) {
+      this.data.lastDrawTime = now
+      this.drawKnowledgeGraphFast() // 使用快速绘制模式
+    }
   },
 
   /**
@@ -504,18 +520,63 @@ Page({
    */
   handleTouchEnd(e) {
     if (this.data.isDragging) {
-      // 拖动结束，显示提示
-      wx.showToast({
-        title: '节点已移动',
-        icon: 'none',
-        duration: 1000
-      })
+      // 拖动结束，重新绘制完整版本
+      this.drawKnowledgeGraph()
     }
 
     this.setData({
       isDragging: false,
       dragNodeIndex: -1
     })
+  },
+
+  /**
+   * 快速绘制模式（拖动时使用，减少细节）
+   */
+  drawKnowledgeGraphFast() {
+    const ctx = wx.createCanvasContext('knowledgeGraph', this)
+    const { canvasWidth, canvasHeight, nodes } = this.data
+
+    // 清空画布
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+
+    // 1. 绘制连接线（简化版）
+    ctx.setLineCap('round')
+    nodes.forEach((node, index) => {
+      if (index === 0) return
+      ctx.beginPath()
+      ctx.moveTo(nodes[0].x, nodes[0].y)
+      ctx.lineTo(node.x, node.y)
+      ctx.setStrokeStyle('rgba(183, 28, 28, 0.2)')
+      ctx.setLineWidth(2)
+      ctx.stroke()
+    })
+
+    // 2. 绘制节点（简化版，不绘制文字）
+    nodes.forEach((node) => {
+      // 绘制节点圆圈
+      ctx.beginPath()
+      ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2)
+      ctx.setFillStyle(node.color)
+      ctx.fill()
+
+      // 绘制节点边框
+      ctx.beginPath()
+      ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2)
+      ctx.setStrokeStyle('#FFFFFF')
+      ctx.setLineWidth(3)
+      ctx.stroke()
+
+      // 只绘制图标
+      ctx.setFontSize(node.type === 'center' ? 20 : 16)
+      ctx.setFillStyle('#FFFFFF')
+      ctx.setTextAlign('center')
+      ctx.setTextBaseline('middle')
+      ctx.fillText(node.icon, node.x, node.y)
+    })
+
+    // 使用 reserve 参数提高性能
+    ctx.draw(true)
   },
 
   /**

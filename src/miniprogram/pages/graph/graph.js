@@ -62,19 +62,10 @@ Page({
         const width = res[0].width
         const height = res[0].height
 
-        // 获取设备像素比
-        const dpr = wx.getWindowInfo().pixelRatio
-
-        // 设置Canvas的实际像素尺寸（物理像素）
-        canvas.width = width * dpr
-        canvas.height = height * dpr
-
-        // 设置Canvas的CSS显示尺寸（必须显式设置）
-        canvas.style.width = width + 'px'
-        canvas.style.height = height + 'px'
-
-        // 缩放绘图上下文以匹配设备像素比
-        ctx.scale(dpr, dpr)
+        // 简化方案：直接使用逻辑像素，不使用DPR缩放
+        // 这样可以避免缩放导致的坐标问题
+        canvas.width = width
+        canvas.height = height
 
         // 保存canvas和context
         this.canvas = canvas
@@ -87,7 +78,7 @@ Page({
           canvasHeight: height
         })
 
-        console.log('Canvas初始化：', { width, height, dpr, actualWidth: width * dpr, actualHeight: height * dpr })
+        console.log('Canvas初始化：', { width, height })
 
         // 绘制知识图谱
         setTimeout(() => {
@@ -311,12 +302,6 @@ Page({
     // 清空画布
     ctx.clearRect(0, 0, canvasWidth, canvasHeight)
 
-    // 设置裁剪区域，确保内容不会绘制到Canvas外
-    ctx.save()
-    ctx.beginPath()
-    ctx.rect(0, 0, canvasWidth, canvasHeight)
-    ctx.clip()
-
     // 画布中心点
     const centerX = canvasWidth / 2
     const centerY = canvasHeight / 2
@@ -523,9 +508,6 @@ Page({
       }
     })
 
-    // 恢复绘图状态
-    ctx.restore()
-
     // Canvas 2D新API：绘制是同步的，无需调用draw()
   },
 
@@ -638,12 +620,6 @@ Page({
     ctx.fillStyle = '#0D0D0D'
     ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight)
 
-    // 设置裁剪区域
-    ctx.save()
-    ctx.beginPath()
-    ctx.rect(0, 0, this.canvasWidth, this.canvasHeight)
-    ctx.clip()
-
     // 1. 极简连接线 - 只绘制被拖动节点的连接线
     ctx.beginPath()
     ctx.strokeStyle = 'rgba(183, 28, 28, 0.15)'
@@ -687,9 +663,6 @@ Page({
       ctx.font = `${node.type === 'center' ? 20 : 16}px sans-serif`
       ctx.fillText(node.icon, node.x, node.y)
     }
-
-    // 恢复绘图状态
-    ctx.restore()
 
     // Canvas 2D新API：同步绘制，无需draw()
   },

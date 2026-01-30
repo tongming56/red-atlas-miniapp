@@ -33,9 +33,10 @@
         <text class="graph-subtitle">{{graphNodeCount}} 个节点</text>
       </view>
 
-      <!-- Canvas 画布 -->
+      <!-- Canvas 画布 (Canvas 2D 新版API) -->
       <canvas
-        canvas-id="knowledgeGraph"
+        type="2d"
+        id="knowledgeGraph"
         class="graph-canvas"
         bindtouchstart="handleTouchStart"
         bindtouchmove="handleTouchMove"

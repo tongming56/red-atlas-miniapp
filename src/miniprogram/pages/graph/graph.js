@@ -38,20 +38,52 @@ Page({
   },
 
   onReady() {
-    // 获取系统信息
-    const systemInfo = wx.getWindowInfo()
-    const canvasWidth = systemInfo.windowWidth - 80  // 减去左右padding
-    const canvasHeight = 500
+    // 初始化Canvas 2D
+    this.initCanvas2D()
+  },
 
-    this.setData({
-      canvasWidth,
-      canvasHeight
-    })
+  /**
+   * 初始化Canvas 2D (新版API)
+   */
+  initCanvas2D() {
+    const query = wx.createSelectorQuery().in(this)
+    query.select('#knowledgeGraph')
+      .fields({ node: true, size: true })
+      .exec((res) => {
+        if (!res || !res[0]) {
+          console.error('Canvas节点获取失败')
+          return
+        }
 
-    // 延迟绘制，确保数据已加载
-    setTimeout(() => {
-      this.drawKnowledgeGraph()
-    }, 300)
+        const canvas = res[0].node
+        const ctx = canvas.getContext('2d')
+
+        // 获取设备像素比，实现高清显示
+        const dpr = wx.getWindowInfo().pixelRatio
+        const width = res[0].width
+        const height = res[0].height
+
+        // 设置canvas尺寸（考虑设备像素比）
+        canvas.width = width * dpr
+        canvas.height = height * dpr
+        ctx.scale(dpr, dpr)
+
+        // 保存canvas和context
+        this.canvas = canvas
+        this.ctx = ctx
+        this.canvasWidth = width
+        this.canvasHeight = height
+
+        this.setData({
+          canvasWidth: width,
+          canvasHeight: height
+        })
+
+        // 绘制知识图谱
+        setTimeout(() => {
+          this.drawKnowledgeGraph()
+        }, 100)
+      })
   },
 
   /**
@@ -257,7 +289,13 @@ Page({
    * 绘制知识图谱 (Obsidian风格 + 可拖动)
    */
   drawKnowledgeGraph() {
-    const ctx = wx.createCanvasContext('knowledgeGraph', this)
+    // 使用Canvas 2D新API
+    if (!this.ctx) {
+      console.error('Canvas context未初始化')
+      return
+    }
+
+    const ctx = this.ctx
     const { canvasWidth, canvasHeight, building } = this.data
 
     // 清空画布
@@ -350,7 +388,7 @@ Page({
     }
 
     // 1. 绘制连接线
-    ctx.setLineCap('round')
+    ctx.lineCap = 'round'
     nodes.forEach((node, index) => {
       if (index === 0) return // 跳过中心节点
 
@@ -358,8 +396,8 @@ Page({
       ctx.beginPath()
       ctx.moveTo(nodes[0].x, nodes[0].y)
       ctx.lineTo(node.x, node.y)
-      ctx.setStrokeStyle('rgba(183, 28, 28, 0.2)')
-      ctx.setLineWidth(2)
+      ctx.strokeStyle = 'rgba(183, 28, 28, 0.2)'
+      ctx.lineWidth = 2
       ctx.stroke()
     })
 
@@ -379,41 +417,41 @@ Page({
 
       ctx.beginPath()
       ctx.arc(node.x, node.y, node.radius + 6, 0, Math.PI * 2)
-      ctx.setFillStyle(glowColor)
+      ctx.fillStyle = glowColor
       ctx.fill()
 
       // 绘制节点圆圈
       ctx.beginPath()
       ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2)
-      ctx.setFillStyle(node.color)
+      ctx.fillStyle = node.color
       ctx.fill()
 
       // 绘制节点边框
       ctx.beginPath()
       ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2)
-      ctx.setStrokeStyle('#FFFFFF')
-      ctx.setLineWidth(3)
+      ctx.strokeStyle = '#FFFFFF'
+      ctx.lineWidth = 3
       ctx.stroke()
 
       // 绘制图标（中心位置）
-      ctx.setFontSize(node.type === 'center' ? 20 : 16)
-      ctx.setFillStyle('#FFFFFF')
-      ctx.setTextAlign('center')
-      ctx.setTextBaseline('middle')
+      ctx.font = `${node.type === 'center' ? 20 : 16}px sans-serif`
+      ctx.fillStyle = '#FFFFFF'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
       ctx.fillText(node.icon, node.x, node.y)
 
       // 绘制类型标签（节点上方）
-      ctx.setFontSize(10)
-      ctx.setFillStyle('rgba(255, 255, 255, 0.6)')
-      ctx.setTextAlign('center')
-      ctx.setTextBaseline('bottom')
+      ctx.font = '10px sans-serif'
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'bottom'
       ctx.fillText(node.typeLabel, node.x, node.y - node.radius - 8)
 
       // 绘制节点名称（节点下方）
-      ctx.setFontSize(node.type === 'center' ? 13 : 11)
-      ctx.setFillStyle('#FFFFFF')
-      ctx.setTextAlign('center')
-      ctx.setTextBaseline('top')
+      ctx.font = `${node.type === 'center' ? 13 : 11}px sans-serif`
+      ctx.fillStyle = '#FFFFFF'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'top'
 
       // 文字换行处理
       const text = node.label
@@ -430,9 +468,9 @@ Page({
 
       // 绘制额外信息（角色/日期/关系）
       if (node.role || node.date || node.relation) {
-        ctx.setFontSize(9)
-        ctx.setFillStyle('rgba(255, 255, 255, 0.5)')
-        ctx.setTextAlign('center')
+        ctx.font = '9px sans-serif'
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'
+        ctx.textAlign = 'center'
         const extraText = node.role || node.date || node.relation
         if (text.length > 7) {
           ctx.fillText(extraText, node.x, node.y + node.radius + 38)
@@ -442,8 +480,7 @@ Page({
       }
     })
 
-    // 绘制到屏幕（使用 reserve 参数提高性能）
-    ctx.draw(false)
+    // Canvas 2D新API：绘制是同步的，无需调用draw()
   },
 
   /**
@@ -531,26 +568,24 @@ Page({
   },
 
   /**
-   * 快速绘制模式（拖动时使用，超简版本）
+   * 快速绘制模式（拖动时使用，Canvas 2D极速版）
    */
   drawKnowledgeGraphFast() {
-    // 获取或创建canvas context（缓存提升性能）
-    if (!this.canvasCtx) {
-      this.canvasCtx = wx.createCanvasContext('knowledgeGraph', this)
-    }
-    const ctx = this.canvasCtx
+    if (!this.ctx) return
+
+    const ctx = this.ctx
     const { canvasWidth, canvasHeight, nodes, dragNodeIndex } = this.data
 
     // 清空画布
-    ctx.setFillStyle('#0D0D0D')
+    ctx.fillStyle = '#0D0D0D'
     ctx.fillRect(0, 0, canvasWidth, canvasHeight)
 
     // 1. 只绘制被拖动节点相关的连接线
     if (dragNodeIndex === 0) {
       // 如果拖动的是中心节点，绘制所有连接线
       ctx.beginPath()
-      ctx.setStrokeStyle('rgba(183, 28, 28, 0.2)')
-      ctx.setLineWidth(1.5)
+      ctx.strokeStyle = 'rgba(183, 28, 28, 0.2)'
+      ctx.lineWidth = 1.5
       for (let i = 1; i < nodes.length; i++) {
         ctx.moveTo(nodes[0].x, nodes[0].y)
         ctx.lineTo(nodes[i].x, nodes[i].y)
@@ -561,14 +596,14 @@ Page({
       ctx.beginPath()
       ctx.moveTo(nodes[0].x, nodes[0].y)
       ctx.lineTo(nodes[dragNodeIndex].x, nodes[dragNodeIndex].y)
-      ctx.setStrokeStyle('rgba(183, 28, 28, 0.2)')
-      ctx.setLineWidth(1.5)
+      ctx.strokeStyle = 'rgba(183, 28, 28, 0.2)'
+      ctx.lineWidth = 1.5
       ctx.stroke()
 
       // 绘制其他节点的静态连接线（更淡）
       ctx.beginPath()
-      ctx.setStrokeStyle('rgba(183, 28, 28, 0.1)')
-      ctx.setLineWidth(1)
+      ctx.strokeStyle = 'rgba(183, 28, 28, 0.1)'
+      ctx.lineWidth = 1
       for (let i = 1; i < nodes.length; i++) {
         if (i === dragNodeIndex) continue
         ctx.moveTo(nodes[0].x, nodes[0].y)
@@ -577,29 +612,30 @@ Page({
       ctx.stroke()
     }
 
-    // 2. 绘制所有节点（批量绘制）
+    // 2. 绘制所有节点（批量绘制，极速模式）
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i]
 
-      // 节点填充和边框一起绘制
+      // 节点填充
       ctx.beginPath()
       ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2)
-      ctx.setFillStyle(node.color)
+      ctx.fillStyle = node.color
       ctx.fill()
-      ctx.setStrokeStyle('#FFFFFF')
-      ctx.setLineWidth(i === dragNodeIndex ? 3 : 2)
+
+      // 节点边框
+      ctx.strokeStyle = '#FFFFFF'
+      ctx.lineWidth = i === dragNodeIndex ? 3 : 2
       ctx.stroke()
 
       // 图标
-      ctx.setFontSize(node.type === 'center' ? 20 : 16)
-      ctx.setFillStyle('#FFFFFF')
-      ctx.setTextAlign('center')
-      ctx.setTextBaseline('middle')
+      ctx.font = `${node.type === 'center' ? 20 : 16}px sans-serif`
+      ctx.fillStyle = '#FFFFFF'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
       ctx.fillText(node.icon, node.x, node.y)
     }
 
-    // 使用draw()立即渲染
-    ctx.draw()
+    // Canvas 2D新API：同步绘制，无需draw()
   },
 
   /**

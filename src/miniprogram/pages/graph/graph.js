@@ -12,7 +12,10 @@ Page({
       relatedEvents: [],
       relatedBuildings: [],
       timeline: []
-    }
+    },
+    graphNodeCount: 0,
+    canvasWidth: 0,
+    canvasHeight: 0
   },
 
   onLoad(options) {
@@ -25,6 +28,23 @@ Page({
     if (options.id) {
       this.loadKnowledgeGraph(options.id)
     }
+  },
+
+  onReady() {
+    // 获取系统信息
+    const systemInfo = wx.getWindowInfo()
+    const canvasWidth = systemInfo.windowWidth - 80  // 减去左右padding
+    const canvasHeight = 500
+
+    this.setData({
+      canvasWidth,
+      canvasHeight
+    })
+
+    // 延迟绘制，确保数据已加载
+    setTimeout(() => {
+      this.drawKnowledgeGraph()
+    }, 300)
   },
 
   /**
@@ -208,8 +228,15 @@ Page({
 
     const graph = knowledgeGraphs[id]
     if (graph) {
+      // 计算节点总数
+      const nodeCount = 1 + // 中心节点
+        (graph.relatedPeople?.length || 0) +
+        (graph.relatedEvents?.length || 0) +
+        (graph.relatedBuildings?.length || 0)
+
       this.setData({
-        building: graph
+        building: graph,
+        graphNodeCount: nodeCount
       })
     } else {
       wx.showToast({
@@ -217,6 +244,167 @@ Page({
         icon: 'none'
       })
     }
+  },
+
+  /**
+   * 绘制知识图谱 (Obsidian风格)
+   */
+  drawKnowledgeGraph() {
+    const ctx = wx.createCanvasContext('knowledgeGraph', this)
+    const { canvasWidth, canvasHeight, building } = this.data
+
+    // 清空画布
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+
+    // 画布中心点
+    const centerX = canvasWidth / 2
+    const centerY = canvasHeight / 2
+
+    // 收集所有节点
+    const nodes = []
+
+    // 中心节点（当前建筑）
+    nodes.push({
+      type: 'center',
+      label: building.name,
+      x: centerX,
+      y: centerY,
+      radius: 30,
+      color: '#D41111'
+    })
+
+    // 计算周边节点位置（圆形分布）
+    let angle = 0
+    const radius = 150 // 分布半径
+
+    // 添加人物节点
+    if (building.relatedPeople && building.relatedPeople.length > 0) {
+      building.relatedPeople.forEach((person, index) => {
+        angle = (Math.PI * 2 / this.data.graphNodeCount) * (index + 1)
+        nodes.push({
+          type: 'people',
+          label: person.name,
+          x: centerX + Math.cos(angle) * radius,
+          y: centerY + Math.sin(angle) * radius,
+          radius: 20,
+          color: '#3B82F6'
+        })
+      })
+    }
+
+    // 添加事件节点
+    if (building.relatedEvents && building.relatedEvents.length > 0) {
+      const offset = (building.relatedPeople?.length || 0) + 1
+      building.relatedEvents.forEach((event, index) => {
+        angle = (Math.PI * 2 / this.data.graphNodeCount) * (offset + index)
+        nodes.push({
+          type: 'event',
+          label: event.title,
+          x: centerX + Math.cos(angle) * radius,
+          y: centerY + Math.sin(angle) * radius,
+          radius: 18,
+          color: '#10B981'
+        })
+      })
+    }
+
+    // 添加关联建筑节点
+    if (building.relatedBuildings && building.relatedBuildings.length > 0) {
+      const offset = (building.relatedPeople?.length || 0) + (building.relatedEvents?.length || 0) + 1
+      building.relatedBuildings.forEach((bld, index) => {
+        angle = (Math.PI * 2 / this.data.graphNodeCount) * (offset + index)
+        nodes.push({
+          type: 'building',
+          label: bld.name,
+          x: centerX + Math.cos(angle) * radius,
+          y: centerY + Math.sin(angle) * radius,
+          radius: 20,
+          color: '#F59E0B'
+        })
+      })
+    }
+
+    // 1. 绘制连接线
+    ctx.setLineCap('round')
+    nodes.forEach((node, index) => {
+      if (index === 0) return // 跳过中心节点
+
+      // 绘制从中心到节点的线
+      ctx.beginPath()
+      ctx.moveTo(centerX, centerY)
+      ctx.lineTo(node.x, node.y)
+      ctx.setStrokeStyle('rgba(183, 28, 28, 0.15)')
+      ctx.setLineWidth(1.5)
+      ctx.stroke()
+    })
+
+    // 2. 绘制节点
+    nodes.forEach((node) => {
+      // 绘制外圈光晕（中心节点特殊处理）
+      if (node.type === 'center') {
+        ctx.beginPath()
+        ctx.arc(node.x, node.y, node.radius + 8, 0, Math.PI * 2)
+        ctx.setFillStyle('rgba(183, 28, 28, 0.1)')
+        ctx.fill()
+      }
+
+      // 绘制节点圆圈
+      ctx.beginPath()
+      ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2)
+      ctx.setFillStyle(node.color)
+      ctx.fill()
+
+      // 绘制节点边框
+      ctx.beginPath()
+      ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2)
+      ctx.setStrokeStyle('#FFFFFF')
+      ctx.setLineWidth(2)
+      ctx.stroke()
+
+      // 绘制节点标签
+      ctx.setFontSize(node.type === 'center' ? 14 : 11)
+      ctx.setFillStyle('#1F1F1F')
+      ctx.setTextAlign('center')
+      ctx.setTextBaseline('top')
+
+      // 文字换行处理
+      const maxWidth = 60
+      const text = node.label
+      if (text.length > 6) {
+        const line1 = text.substring(0, 6)
+        const line2 = text.substring(6, 12)
+        ctx.fillText(line1, node.x, node.y + node.radius + 8)
+        if (line2) {
+          ctx.fillText(line2, node.x, node.y + node.radius + 22)
+        }
+      } else {
+        ctx.fillText(text, node.x, node.y + node.radius + 8)
+      }
+    })
+
+    // 绘制到屏幕
+    ctx.draw()
+  },
+
+  /**
+   * 触摸开始
+   */
+  handleTouchStart(e) {
+    // 预留交互功能
+  },
+
+  /**
+   * 触摸移动
+   */
+  handleTouchMove(e) {
+    // 预留拖动功能
+  },
+
+  /**
+   * 触摸结束
+   */
+  handleTouchEnd(e) {
+    // 预留点击节点功能
   },
 
   /**

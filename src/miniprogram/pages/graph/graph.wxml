@@ -23,49 +23,39 @@
       </view>
     </view>
 
-    <!-- 关系网络图 -->
+    <!-- 关系网络图 (Obsidian风格) -->
     <view class="relation-graph">
-      <view class="graph-title">关系网络图</view>
+      <view class="graph-header">
+        <text class="graph-title">知识图谱</text>
+        <text class="graph-subtitle">共 {{graphNodeCount}} 个节点</text>
+      </view>
 
-      <!-- 关系图画布 -->
-      <view class="graph-canvas">
-        <!-- 中心节点 -->
-        <view class="graph-center">
-          <view class="center-dot"></view>
-          <text class="center-label">{{building.name}}</text>
+      <!-- Canvas 画布 -->
+      <canvas
+        canvas-id="knowledgeGraph"
+        class="graph-canvas"
+        bindtouchstart="handleTouchStart"
+        bindtouchmove="handleTouchMove"
+        bindtouchend="handleTouchEnd"
+      ></canvas>
+
+      <!-- 图例 -->
+      <view class="graph-legend">
+        <view class="legend-item">
+          <view class="legend-dot legend-center"></view>
+          <text class="legend-text">当前建筑</text>
         </view>
-
-        <!-- 人物节点 -->
-        <view class="graph-nodes people-nodes" wx:if="{{building.relatedPeople && building.relatedPeople.length > 0}}">
-          <view class="graph-node" wx:for="{{building.relatedPeople}}" wx:key="name" wx:if="{{index < 3}}">
-            <view class="node-line node-line-people"></view>
-            <view class="node-dot node-dot-people">
-              <text class="node-icon">👤</text>
-            </view>
-            <text class="node-label">{{item.name}}</text>
-          </view>
+        <view class="legend-item">
+          <view class="legend-dot legend-people"></view>
+          <text class="legend-text">相关人物</text>
         </view>
-
-        <!-- 事件节点 -->
-        <view class="graph-nodes event-nodes" wx:if="{{building.relatedEvents && building.relatedEvents.length > 0}}">
-          <view class="graph-node" wx:for="{{building.relatedEvents}}" wx:key="date" wx:if="{{index < 2}}">
-            <view class="node-line node-line-event"></view>
-            <view class="node-dot node-dot-event">
-              <text class="node-icon">📅</text>
-            </view>
-            <text class="node-label">{{item.title}}</text>
-          </view>
+        <view class="legend-item">
+          <view class="legend-dot legend-event"></view>
+          <text class="legend-text">历史事件</text>
         </view>
-
-        <!-- 关联建筑节点 -->
-        <view class="graph-nodes building-nodes" wx:if="{{building.relatedBuildings && building.relatedBuildings.length > 0}}">
-          <view class="graph-node" wx:for="{{building.relatedBuildings}}" wx:key="id" wx:if="{{index < 2}}">
-            <view class="node-line node-line-building"></view>
-            <view class="node-dot node-dot-building">
-              <text class="node-icon">🏛</text>
-            </view>
-            <text class="node-label">{{item.name}}</text>
-          </view>
+        <view class="legend-item">
+          <view class="legend-dot legend-building"></view>
+          <text class="legend-text">关联建筑</text>
         </view>
       </view>
     </view>

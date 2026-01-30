@@ -326,7 +326,7 @@ Page({
 
       // 计算周边节点位置（圆形分布）
       let angle = 0
-      const radius = 150 // 分布半径（减小以避免溢出）
+      const radius = 120 // 进一步减小分布半径以避免溢出
 
       // 添加人物节点
       if (building.relatedPeople && building.relatedPeople.length > 0) {
@@ -335,11 +335,16 @@ Page({
           const x = centerX + Math.cos(angle) * radius
           const y = centerY + Math.sin(angle) * radius
 
-          // 边界约束（考虑节点半径和文字标签高度）
+          // 边界约束（精确计算文字标签空间）
           const nodeRadius = 25
-          const textHeight = 50 // 文字标签需要的额外空间
-          const safeX = Math.max(nodeRadius + 10, Math.min(canvasWidth - nodeRadius - 10, x))
-          const safeY = Math.max(nodeRadius + 20, Math.min(canvasHeight - textHeight, y))
+          // 上方：类型标签(10px) + 间距(8px) = 约40px
+          const topMargin = 40
+          // 下方：名称(最多2行，14px*2) + 额外信息(9px) + 间距 = 约70px
+          const bottomMargin = 70
+          const sideMargin = 50 // 左右需要更多空间容纳可能的长文字
+
+          const safeX = Math.max(sideMargin, Math.min(canvasWidth - sideMargin, x))
+          const safeY = Math.max(topMargin, Math.min(canvasHeight - bottomMargin, y))
 
           nodes.push({
             type: 'people',
@@ -363,11 +368,14 @@ Page({
           const x = centerX + Math.cos(angle) * radius
           const y = centerY + Math.sin(angle) * radius
 
-          // 边界约束（考虑节点半径和文字标签高度）
+          // 边界约束（精确计算文字标签空间）
           const nodeRadius = 25
-          const textHeight = 50
-          const safeX = Math.max(nodeRadius + 10, Math.min(canvasWidth - nodeRadius - 10, x))
-          const safeY = Math.max(nodeRadius + 20, Math.min(canvasHeight - textHeight, y))
+          const topMargin = 40
+          const bottomMargin = 70
+          const sideMargin = 50
+
+          const safeX = Math.max(sideMargin, Math.min(canvasWidth - sideMargin, x))
+          const safeY = Math.max(topMargin, Math.min(canvasHeight - bottomMargin, y))
 
           nodes.push({
             type: 'event',
@@ -391,11 +399,14 @@ Page({
           const x = centerX + Math.cos(angle) * radius
           const y = centerY + Math.sin(angle) * radius
 
-          // 边界约束（考虑节点半径和文字标签高度）
+          // 边界约束（精确计算文字标签空间）
           const nodeRadius = 25
-          const textHeight = 50
-          const safeX = Math.max(nodeRadius + 10, Math.min(canvasWidth - nodeRadius - 10, x))
-          const safeY = Math.max(nodeRadius + 20, Math.min(canvasHeight - textHeight, y))
+          const topMargin = 40
+          const bottomMargin = 70
+          const sideMargin = 50
+
+          const safeX = Math.max(sideMargin, Math.min(canvasWidth - sideMargin, x))
+          const safeY = Math.max(topMargin, Math.min(canvasHeight - bottomMargin, y))
 
           nodes.push({
             type: 'building',
@@ -560,14 +571,14 @@ Page({
     nodes[nodeIndex].x += deltaX
     nodes[nodeIndex].y += deltaY
 
-    // 边界限制（考虑文字标签高度）
+    // 边界限制（与初始化时使用相同的margin）
     const node = nodes[nodeIndex]
-    const marginX = node.radius + 10
-    const marginTop = node.radius + 20  // 上方留出类型标签空间
-    const marginBottom = 50             // 下方留出名称和额外信息空间
+    const topMargin = 40        // 上方：类型标签空间
+    const bottomMargin = 70     // 下方：名称+额外信息空间
+    const sideMargin = 50       // 左右：文字宽度空间
 
-    node.x = Math.max(marginX, Math.min(this.canvasWidth - marginX, node.x))
-    node.y = Math.max(marginTop, Math.min(this.canvasHeight - marginBottom, node.y))
+    node.x = Math.max(sideMargin, Math.min(this.canvasWidth - sideMargin, node.x))
+    node.y = Math.max(topMargin, Math.min(this.canvasHeight - bottomMargin, node.y))
 
     // 更新触摸位置（不调用setData）
     this.data.lastTouchX = x

@@ -1,4 +1,170 @@
-<view class="temp-page">
-  <view class="temp-message">详情页开发中...</view>
-  <button bindtap="goBack">返回</button>
+<!-- 详情页 -->
+<view class="page-container">
+  <!-- 顶部大图区域 -->
+  <view class="header-image" style="background-image: url('{{building.image}}');">
+    <view class="image-overlay"></view>
+
+    <!-- 顶部导航栏 -->
+    <view class="nav-bar" style="padding-top: {{statusBarHeight + 10}}px;">
+      <button class="nav-button" bindtap="goBack" hover-class="nav-button-hover">
+        <image class="nav-icon" src="/assets/icons/chevron-left-white.svg" mode="aspectFit" />
+      </button>
+      <view class="nav-right">
+        <button class="nav-button" open-type="share" hover-class="nav-button-hover">
+          <text class="share-icon">⋯</text>
+        </button>
+      </view>
+    </view>
+
+    <!-- 底部标题信息 -->
+    <view class="header-title">
+      <view class="badge-group">
+        <view class="badge badge-red">红色地标</view>
+        <view class="badge badge-dark">ID: MD-{{building.id}}</view>
+      </view>
+      <text class="title">{{building.name}}</text>
+      <view class="view-count">
+        <text class="eye-icon">👁</text>
+        <text>{{building.views}} 次浏览</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 主内容区域（圆角卡片） -->
+  <scroll-view class="content-wrapper" scroll-y>
+    <view class="content-inner">
+      <!-- 地址信息卡片 -->
+      <view class="info-card">
+        <!-- 详细地址 -->
+        <view class="info-row">
+          <view class="icon-box icon-red">
+            <image class="info-icon" src="/assets/icons/location-red.svg" mode="aspectFit" />
+          </view>
+          <view class="info-content">
+            <text class="info-label">详细地址</text>
+            <text class="info-value">{{building.address}}</text>
+          </view>
+          <image class="arrow-icon" src="/assets/icons/chevron-right-gray.svg" mode="aspectFit" />
+        </view>
+
+        <view class="divider"></view>
+
+        <!-- 所属区域和城市 -->
+        <view class="info-grid">
+          <view class="info-col">
+            <view class="icon-box icon-red">
+              <image class="info-icon" src="/assets/icons/map-white.svg" mode="aspectFit" />
+            </view>
+            <view class="info-content-small">
+              <text class="info-label">所属区域</text>
+              <text class="info-value">{{building.province}}</text>
+            </view>
+          </view>
+          <view class="info-col">
+            <view class="icon-box icon-red">
+              <text class="building-icon">🏛</text>
+            </view>
+            <view class="info-content-small">
+              <text class="info-label">城市</text>
+              <text class="info-value">{{building.city}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 简介部分 -->
+      <view class="section">
+        <view class="section-header">
+          <view class="dot"></view>
+          <text class="section-title">简介</text>
+        </view>
+        <view class="description-box">
+          <text class="description {{expanded ? 'expanded' : 'collapsed'}}">{{building.description}}</text>
+          <button class="expand-button" bindtap="toggleExpand">
+            <text class="expand-text">{{expanded ? '收起' : '展开阅读'}}</text>
+            <text class="expand-arrow {{expanded ? 'rotate' : ''}}">▼</text>
+          </button>
+        </view>
+      </view>
+
+      <!-- 功能服务 -->
+      <view class="section">
+        <view class="section-header">
+          <view class="dot"></view>
+          <text class="section-title">功能服务</text>
+        </view>
+        <view class="service-grid">
+          <!-- 3D 全景 -->
+          <button class="service-card" bindtap="goTo3D" hover-class="service-card-hover">
+            <view class="service-arrow">→</view>
+            <view class="service-icon service-icon-blue">
+              <text class="service-emoji">🎯</text>
+            </view>
+            <view class="service-text">
+              <text class="service-name">3D 全景</text>
+              <text class="service-desc">沉浸式虚拟体验</text>
+            </view>
+          </button>
+
+          <!-- 知识图谱 -->
+          <button class="service-card" bindtap="goToGraph" hover-class="service-card-hover">
+            <view class="service-arrow">→</view>
+            <view class="service-icon service-icon-purple">
+              <text class="service-emoji">🌐</text>
+            </view>
+            <view class="service-text">
+              <text class="service-name">知识图谱</text>
+              <text class="service-desc">历史关联网络</text>
+            </view>
+          </button>
+
+          <!-- 地图导航 -->
+          <button class="service-card" bindtap="navigate" hover-class="service-card-hover">
+            <view class="service-arrow">→</view>
+            <view class="service-icon service-icon-green">
+              <text class="service-emoji">📍</text>
+            </view>
+            <view class="service-text">
+              <text class="service-name">地图导航</text>
+              <text class="service-desc">距离当前 2.4km</text>
+            </view>
+          </button>
+
+          <!-- 收藏景点 -->
+          <button class="service-card" bindtap="toggleFavorite" hover-class="service-card-hover">
+            <view class="service-arrow">★</view>
+            <view class="service-icon service-icon-orange">
+              <text class="service-emoji">{{isFavorite ? '❤️' : '🤍'}}</text>
+            </view>
+            <view class="service-text">
+              <text class="service-name">{{isFavorite ? '已收藏' : '收藏景点'}}</text>
+              <text class="service-desc">加入行程规划</text>
+            </view>
+          </button>
+        </view>
+      </view>
+
+      <!-- 开放时间和门票信息 -->
+      <view class="time-card">
+        <view class="time-row">
+          <view class="time-left">
+            <text class="time-emoji">🕐</text>
+            <text class="time-label">开放时间</text>
+          </view>
+          <text class="time-value">{{building.openTime}}</text>
+        </view>
+        <view class="divider"></view>
+        <view class="time-row">
+          <view class="time-left">
+            <text class="time-emoji">🎫</text>
+            <text class="time-label">门票信息</text>
+          </view>
+          <text class="time-value time-value-free">{{building.ticketPrice}}</text>
+        </view>
+      </view>
+
+      <!-- 底部占位 -->
+      <view class="bottom-placeholder"></view>
+    </view>
+  </scroll-view>
 </view>

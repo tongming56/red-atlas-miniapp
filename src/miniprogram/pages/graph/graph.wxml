@@ -38,9 +38,10 @@
         type="2d"
         id="knowledgeGraph"
         class="graph-canvas"
-        bindtouchstart="handleTouchStart"
-        bindtouchmove="handleTouchMove"
-        bindtouchend="handleTouchEnd"
+        catchtouchstart="handleTouchStart"
+        catchtouchmove="handleTouchMove"
+        catchtouchend="handleTouchEnd"
+        disable-scroll="true"
       ></canvas>
 
       <!-- 图例 -->

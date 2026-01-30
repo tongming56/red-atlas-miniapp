@@ -513,7 +513,7 @@ Page({
   },
 
   /**
-   * 触摸移动（优化性能）
+   * 触摸移动（极限性能优化）
    */
   handleTouchMove(e) {
     if (!this.data.isDragging || this.data.dragNodeIndex < 0) return
@@ -535,15 +535,23 @@ Page({
     // 边界限制
     const node = nodes[nodeIndex]
     const margin = node.radius + 10
-    node.x = Math.max(margin, Math.min(this.data.canvasWidth - margin, node.x))
-    node.y = Math.max(margin, Math.min(this.data.canvasHeight - margin, node.y))
+    node.x = Math.max(margin, Math.min(this.canvasWidth - margin, node.x))
+    node.y = Math.max(margin, Math.min(this.canvasHeight - margin, node.y))
 
     // 更新触摸位置（不调用setData）
     this.data.lastTouchX = x
     this.data.lastTouchY = y
 
-    // 立即绘制，不节流
-    this.drawKnowledgeGraphFast()
+    // 取消之前的动画帧
+    if (this.rafId) {
+      this.canvas.cancelAnimationFrame(this.rafId)
+    }
+
+    // 使用requestAnimationFrame确保在最佳时机绘制
+    this.rafId = this.canvas.requestAnimationFrame(() => {
+      this.drawKnowledgeGraphFast()
+      this.rafId = null
+    })
   },
 
   /**
@@ -568,70 +576,60 @@ Page({
   },
 
   /**
-   * 快速绘制模式（拖动时使用，Canvas 2D极速版）
+   * 快速绘制模式（拖动时使用，超极简版本）
    */
   drawKnowledgeGraphFast() {
     if (!this.ctx) return
 
     const ctx = this.ctx
-    const { canvasWidth, canvasHeight, nodes, dragNodeIndex } = this.data
+    const nodes = this.data.nodes
+    const dragNodeIndex = this.data.dragNodeIndex
 
     // 清空画布
     ctx.fillStyle = '#0D0D0D'
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+    ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight)
 
-    // 1. 只绘制被拖动节点相关的连接线
+    // 1. 极简连接线 - 只绘制被拖动节点的连接线
+    ctx.beginPath()
+    ctx.strokeStyle = 'rgba(183, 28, 28, 0.15)'
+    ctx.lineWidth = 1
     if (dragNodeIndex === 0) {
-      // 如果拖动的是中心节点，绘制所有连接线
-      ctx.beginPath()
-      ctx.strokeStyle = 'rgba(183, 28, 28, 0.2)'
-      ctx.lineWidth = 1.5
+      // 中心节点被拖动
       for (let i = 1; i < nodes.length; i++) {
         ctx.moveTo(nodes[0].x, nodes[0].y)
         ctx.lineTo(nodes[i].x, nodes[i].y)
       }
-      ctx.stroke()
-    } else if (dragNodeIndex > 0) {
-      // 如果拖动的是其他节点，只绘制它到中心的连接线
-      ctx.beginPath()
-      ctx.moveTo(nodes[0].x, nodes[0].y)
-      ctx.lineTo(nodes[dragNodeIndex].x, nodes[dragNodeIndex].y)
-      ctx.strokeStyle = 'rgba(183, 28, 28, 0.2)'
-      ctx.lineWidth = 1.5
-      ctx.stroke()
-
-      // 绘制其他节点的静态连接线（更淡）
-      ctx.beginPath()
-      ctx.strokeStyle = 'rgba(183, 28, 28, 0.1)'
-      ctx.lineWidth = 1
+    } else {
+      // 其他节点被拖动 - 只画所有连接线
       for (let i = 1; i < nodes.length; i++) {
-        if (i === dragNodeIndex) continue
         ctx.moveTo(nodes[0].x, nodes[0].y)
         ctx.lineTo(nodes[i].x, nodes[i].y)
       }
-      ctx.stroke()
     }
+    ctx.stroke()
 
-    // 2. 绘制所有节点（批量绘制，极速模式）
+    // 2. 极简节点 - 批量绘制，最少API调用
+    ctx.lineWidth = 2
+    ctx.strokeStyle = '#FFFFFF'
+
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i]
 
-      // 节点填充
+      // 填充和描边一起
       ctx.beginPath()
       ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2)
       ctx.fillStyle = node.color
       ctx.fill()
-
-      // 节点边框
-      ctx.strokeStyle = '#FFFFFF'
-      ctx.lineWidth = i === dragNodeIndex ? 3 : 2
       ctx.stroke()
+    }
 
-      // 图标
+    // 3. 图标 - 最后统一绘制文字
+    ctx.fillStyle = '#FFFFFF'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i]
       ctx.font = `${node.type === 'center' ? 20 : 16}px sans-serif`
-      ctx.fillStyle = '#FFFFFF'
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
       ctx.fillText(node.icon, node.x, node.y)
     }
 

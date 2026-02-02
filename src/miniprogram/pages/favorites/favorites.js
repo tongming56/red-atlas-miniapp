@@ -5,6 +5,8 @@ Page({
   data: {
     statusBarHeight: 0,
     activeFilter: '全部',
+    isEditMode: false,
+    selectedCount: 0,
     favorites: [
       {
         id: 1,
@@ -106,10 +108,101 @@ Page({
     })
   },
 
+  // 切换编辑模式
+  toggleEditMode() {
+    const isEditMode = !this.data.isEditMode
+
+    if (!isEditMode) {
+      // 退出编辑模式，清除所有选择
+      const favorites = this.data.favorites.map(item => ({
+        ...item,
+        selected: false
+      }))
+      this.setData({
+        isEditMode: false,
+        favorites,
+        selectedCount: 0
+      })
+    } else {
+      this.setData({
+        isEditMode: true
+      })
+    }
+  },
+
+  // 切换单个项目的选择状态
+  toggleSelect(e) {
+    const id = e.currentTarget.dataset.id
+    const favorites = this.data.favorites.map(item => {
+      if (item.id === id) {
+        return { ...item, selected: !item.selected }
+      }
+      return item
+    })
+
+    const selectedCount = favorites.filter(item => item.selected).length
+
+    this.setData({
+      favorites,
+      selectedCount
+    })
+  },
+
+  // 全选/取消全选
+  toggleSelectAll() {
+    const { favorites, selectedCount } = this.data
+    const isAllSelected = selectedCount === favorites.length && favorites.length > 0
+
+    const updatedFavorites = favorites.map(item => ({
+      ...item,
+      selected: !isAllSelected
+    }))
+
+    this.setData({
+      favorites: updatedFavorites,
+      selectedCount: isAllSelected ? 0 : favorites.length
+    })
+  },
+
+  // 批量删除
+  batchDelete() {
+    const { selectedCount, favorites } = this.data
+
+    if (selectedCount === 0) {
+      return
+    }
+
+    wx.showModal({
+      title: '提示',
+      content: `确定要删除选中的 ${selectedCount} 个收藏吗？`,
+      confirmColor: '#B71C1C',
+      success: (res) => {
+        if (res.confirm) {
+          const remainingFavorites = favorites.filter(item => !item.selected)
+
+          this.setData({
+            favorites: remainingFavorites,
+            selectedCount: 0,
+            isEditMode: false
+          })
+
+          // TODO: 更新本地存储或服务器
+          app.globalData.favorites = remainingFavorites
+
+          wx.showToast({
+            title: `已删除 ${selectedCount} 个收藏`,
+            icon: 'success',
+            duration: 1500
+          })
+        }
+      }
+    })
+  },
+
   onShow() {
     // 刷新收藏列表
     this.loadFavorites()
-    
+
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({
         selected: 2

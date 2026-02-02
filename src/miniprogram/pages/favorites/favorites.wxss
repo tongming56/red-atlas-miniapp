@@ -95,6 +95,12 @@
   font-size: 24rpx;
   font-weight: 500;
   padding: 8rpx 16rpx;
+  transition: color 0.3s ease;
+}
+
+.manage-button.editing {
+  color: #B71C1C;
+  font-weight: 600;
 }
 
 /* 主内容区 */
@@ -119,11 +125,46 @@
   border-radius: 24rpx;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
   position: relative;
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .favorite-card:active {
   transform: scale(0.99);
+}
+
+.favorite-card.edit-mode {
+  padding-left: 16rpx;
+}
+
+/* 复选框 */
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 4rpx;
+}
+
+.checkbox {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  border: 2rpx solid #D1D5DB;
+  background-color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.checkbox.checked {
+  background-color: #B71C1C;
+  border-color: #B71C1C;
+}
+
+.check-icon {
+  width: 28rpx;
+  height: 28rpx;
 }
 
 /* 图片 */
@@ -155,6 +196,10 @@
   min-width: 0;
   height: 176rpx;
   padding: 4rpx 64rpx 4rpx 0;
+}
+
+.favorite-card.edit-mode .card-content {
+  padding-right: 0;
 }
 
 .content-top {
@@ -282,4 +327,54 @@
 /* 底部占位 */
 .bottom-placeholder {
   height: 160rpx;
+}
+
+/* 编辑模式底部操作栏 */
+.edit-toolbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background-color: #FFFFFF;
+  border-top: 1rpx solid #F3F4F6;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);
+  z-index: 100;
+}
+
+.toolbar-button {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border: 1rpx solid #E5E7EB;
+  background-color: #F9FAFB;
+  color: #6B7280;
+}
+
+.toolbar-button.active {
+  background-color: #B71C1C;
+  color: #FFFFFF;
+  border-color: #B71C1C;
+  box-shadow: 0 4rpx 12rpx rgba(183, 28, 28, 0.2);
+}
+
+.toolbar-button:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+.toolbar-button.delete-button.disabled {
+  background-color: #F3F4F6;
+  color: #D1D5DB;
+  border-color: #F3F4F6;
 }

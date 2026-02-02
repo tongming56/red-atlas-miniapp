@@ -14,14 +14,14 @@
   <!-- 筛选栏 -->
   <view class="filter-bar">
     <view class="filter-left">
-      <view 
+      <view
         class="filter-item {{activeFilter === '全部' ? 'active' : ''}}"
         bindtap="changeFilter"
         data-filter="全部"
       >
         全部
       </view>
-      <view 
+      <view
         class="filter-item {{activeFilter === '最近添加' ? 'active' : ''}}"
         bindtap="changeFilter"
         data-filter="最近添加"
@@ -29,19 +29,28 @@
         最近添加
       </view>
     </view>
-    <text class="manage-button">管理</text>
+    <text class="manage-button {{isEditMode ? 'editing' : ''}}" bindtap="toggleEditMode">
+      {{isEditMode ? '完成' : '管理'}}
+    </text>
   </view>
 
   <!-- 主内容区 -->
   <scroll-view class="main-content" scroll-y>
     <view class="favorites-list">
-      <view 
-        wx:for="{{favorites}}" 
+      <view
+        wx:for="{{favorites}}"
         wx:key="id"
-        class="favorite-card active-scale"
-        bindtap="goToDetail"
+        class="favorite-card {{isEditMode ? 'edit-mode' : 'active-scale'}}"
+        bindtap="{{isEditMode ? 'toggleSelect' : 'goToDetail'}}"
         data-id="{{item.id}}"
       >
+        <!-- 复选框（编辑模式） -->
+        <view wx:if="{{isEditMode}}" class="checkbox-wrapper">
+          <view class="checkbox {{item.selected ? 'checked' : ''}}">
+            <image wx:if="{{item.selected}}" class="check-icon" src="/assets/icons/check-white.svg" mode="aspectFit" />
+          </view>
+        </view>
+
         <!-- 图片 -->
         <view class="card-image-wrapper">
           <image class="card-image" src="{{item.image}}" mode="aspectFill" />
@@ -61,8 +70,8 @@
           </view>
         </view>
 
-        <!-- 收藏按钮 -->
-        <view class="favorite-button" catchtap="toggleFavorite" data-id="{{item.id}}">
+        <!-- 收藏按钮（非编辑模式） -->
+        <view wx:if="{{!isEditMode}}" class="favorite-button" catchtap="toggleFavorite" data-id="{{item.id}}">
           <image class="heart-icon" src="/assets/icons/heart-fill-red.svg" mode="aspectFit" />
         </view>
       </view>
@@ -81,4 +90,14 @@
     <!-- 底部占位 -->
     <view class="bottom-placeholder"></view>
   </scroll-view>
+
+  <!-- 编辑模式底部操作栏 -->
+  <view wx:if="{{isEditMode}}" class="edit-toolbar">
+    <button class="toolbar-button {{selectedCount === favorites.length && favorites.length > 0 ? 'active' : ''}}" bindtap="toggleSelectAll">
+      {{selectedCount === favorites.length && favorites.length > 0 ? '取消全选' : '全选'}}
+    </button>
+    <button class="toolbar-button delete-button {{selectedCount > 0 ? 'active' : 'disabled'}}" bindtap="batchDelete" disabled="{{selectedCount === 0}}">
+      删除 {{selectedCount > 0 ? '(' + selectedCount + ')' : ''}}
+    </button>
+  </view>
 </view>

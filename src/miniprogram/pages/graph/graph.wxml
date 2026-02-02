@@ -42,7 +42,8 @@
           catchtouchstart="handleTouchStart"
           catchtouchmove="handleTouchMove"
           catchtouchend="handleTouchEnd"
-          disable-scroll="true"
+          disable-scroll="{{true}}"
+          bindtouchcancel="handleTouchEnd"
         ></canvas>
       </view>
 

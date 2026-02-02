@@ -128,6 +128,10 @@
   box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.3);
   overflow: hidden;
   position: relative;
+  /* ⭐ 创建独立的层叠上下文，限制Canvas渲染层 */
+  isolation: isolate;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .graph-header {
@@ -167,6 +171,11 @@
   margin-bottom: 24rpx;
   position: relative;
   overflow: hidden;
+  /* ⭐ 强制创建合成层，限制Canvas渲染范围 */
+  isolation: isolate;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
 }
 
 /* Canvas 画布 */
@@ -174,6 +183,9 @@
   width: 100%;
   height: 100%;
   display: block;
+  /* ⭐ 确保Canvas本身也创建独立层 */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 /* 图例 */

@@ -55,7 +55,7 @@
           </view>
           <view class="info-col">
             <view class="icon-box icon-red">
-              <text class="building-icon">🏛</text>
+              <image class="info-icon" src="/assets/icons/building.svg" mode="aspectFit" />
             </view>
             <view class="info-content-small">
               <text class="info-label">城市</text>

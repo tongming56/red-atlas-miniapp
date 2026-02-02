@@ -9,65 +9,65 @@
     <view class="nav-placeholder"></view>
   </view>
 
-  <!-- 滚动内容区域 -->
+  <!-- 中心建筑卡片 - 固定区域 -->
+  <view class="center-node">
+    <view class="node-card building-node">
+      <view class="node-icon">🏛</view>
+      <view class="node-info">
+        <view class="node-title">{{building.name}}</view>
+        <view class="node-subtitle">{{building.city}}</view>
+      </view>
+      <view class="node-badge">中心</view>
+    </view>
+  </view>
+
+  <!-- 关系网络图 (Obsidian风格) - 固定区域，不随页面滚动 -->
+  <view class="relation-graph">
+    <view class="graph-header">
+      <view>
+        <text class="graph-title">知识图谱</text>
+        <text class="graph-hint">👆 长按拖动节点</text>
+      </view>
+      <text class="graph-subtitle">{{graphNodeCount}} 个节点</text>
+    </view>
+
+    <!-- Canvas 画布容器 -->
+    <view class="canvas-container">
+      <canvas
+        type="2d"
+        id="knowledgeGraph"
+        class="graph-canvas"
+        catchtouchstart="handleTouchStart"
+        catchtouchmove="handleTouchMove"
+        catchtouchend="handleTouchEnd"
+        disable-scroll="{{true}}"
+        bindtouchcancel="handleTouchEnd"
+      ></canvas>
+    </view>
+
+    <!-- 图例 -->
+    <view class="graph-legend">
+      <view class="legend-item">
+        <view class="legend-dot legend-center"></view>
+        <text class="legend-text">建筑 🏛</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-dot legend-people"></view>
+        <text class="legend-text">人物 👤</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-dot legend-event"></view>
+        <text class="legend-text">事件 📅</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-dot legend-building"></view>
+        <text class="legend-text">关联 🏛</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 滚动内容区域 - 只包含下面的详细信息 -->
   <scroll-view class="content-scroll" scroll-y>
-    <!-- 中心建筑卡片 -->
-    <view class="center-node">
-      <view class="node-card building-node">
-        <view class="node-icon">🏛</view>
-        <view class="node-info">
-          <view class="node-title">{{building.name}}</view>
-          <view class="node-subtitle">{{building.city}}</view>
-        </view>
-        <view class="node-badge">中心</view>
-      </view>
-    </view>
-
-    <!-- 关系网络图 (Obsidian风格) -->
-    <view class="relation-graph">
-      <view class="graph-header">
-        <view>
-          <text class="graph-title">知识图谱</text>
-          <text class="graph-hint">👆 长按拖动节点</text>
-        </view>
-        <text class="graph-subtitle">{{graphNodeCount}} 个节点</text>
-      </view>
-
-      <!-- Canvas 画布容器 -->
-      <view class="canvas-container">
-        <canvas
-          type="2d"
-          id="knowledgeGraph"
-          class="graph-canvas"
-          catchtouchstart="handleTouchStart"
-          catchtouchmove="handleTouchMove"
-          catchtouchend="handleTouchEnd"
-          disable-scroll="{{true}}"
-          bindtouchcancel="handleTouchEnd"
-        ></canvas>
-      </view>
-
-      <!-- 图例 -->
-      <view class="graph-legend">
-        <view class="legend-item">
-          <view class="legend-dot legend-center"></view>
-          <text class="legend-text">建筑 🏛</text>
-        </view>
-        <view class="legend-item">
-          <view class="legend-dot legend-people"></view>
-          <text class="legend-text">人物 👤</text>
-        </view>
-        <view class="legend-item">
-          <view class="legend-dot legend-event"></view>
-          <text class="legend-text">事件 📅</text>
-        </view>
-        <view class="legend-item">
-          <view class="legend-dot legend-building"></view>
-          <text class="legend-text">关联 🏛</text>
-        </view>
-      </view>
-    </view>
-
     <!-- 相关人物 -->
     <view class="section" wx:if="{{building.relatedPeople && building.relatedPeople.length > 0}}">
       <view class="section-header">

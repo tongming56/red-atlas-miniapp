@@ -5,20 +5,8 @@
     <button class="nav-button" bindtap="goBack" hover-class="nav-button-hover">
       <image class="nav-icon" src="/assets/icons/chevron-left-white.svg" mode="aspectFit" />
     </button>
-    <view class="nav-title">知识图谱</view>
+    <view class="nav-title">{{building.name}}</view>
     <view class="nav-placeholder"></view>
-  </view>
-
-  <!-- 中心建筑卡片 - 固定区域 -->
-  <view class="center-node">
-    <view class="node-card building-node">
-      <view class="node-icon">🏛</view>
-      <view class="node-info">
-        <view class="node-title">{{building.name}}</view>
-        <view class="node-subtitle">{{building.city}}</view>
-      </view>
-      <view class="node-badge">中心</view>
-    </view>
   </view>
 
   <!-- 关系网络图 (Obsidian风格) - 固定区域，不随页面滚动 -->

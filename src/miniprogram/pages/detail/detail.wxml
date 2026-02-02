@@ -127,7 +127,7 @@
           <button class="service-card" bindtap="toggleFavorite" hover-class="service-card-hover">
             <view class="service-arrow">★</view>
             <view class="service-icon service-icon-orange">
-              <image class="service-icon-img" src="{{isFavorite ? '/assets/icons/heart-filled.svg' : '/assets/icons/heart-outline.svg'}}" mode="aspectFit" />
+              <image class="service-icon-img" src="{{isFavorite ? '/assets/icons/heart-fill-red.svg' : '/assets/icons/heart-outline.svg'}}" mode="aspectFit" />
             </view>
             <view class="service-text">
               <text class="service-name">{{isFavorite ? '已收藏' : '收藏景点'}}</text>

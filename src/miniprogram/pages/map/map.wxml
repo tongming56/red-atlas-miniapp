@@ -13,11 +13,6 @@
     enable-overlooking="{{false}}"
     show-compass="{{true}}"
   >
-    <!-- 回到当前位置按钮 -->
-    <cover-view class="map-control location-control" bindtap="moveToMyLocation">
-      <cover-image class="control-icon" src="/assets/icons/location-red.svg" mode="aspectFit" />
-    </cover-view>
-
     <!-- 缩放控制按钮 -->
     <cover-view class="map-control zoom-controls">
       <cover-view class="zoom-button" bindtap="zoomIn">

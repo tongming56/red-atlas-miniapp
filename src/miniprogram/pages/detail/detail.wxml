@@ -91,7 +91,7 @@
           <button class="service-card" bindtap="goTo3D" hover-class="service-card-hover">
             <view class="service-arrow">→</view>
             <view class="service-icon service-icon-blue">
-              <text class="service-emoji">🎯</text>
+              <image class="service-icon-img" src="/assets/icons/3d-cube.svg" mode="aspectFit" />
             </view>
             <view class="service-text">
               <text class="service-name">3D 全景</text>
@@ -103,7 +103,7 @@
           <button class="service-card" bindtap="goToGraph" hover-class="service-card-hover">
             <view class="service-arrow">→</view>
             <view class="service-icon service-icon-purple">
-              <text class="service-emoji">🌐</text>
+              <image class="service-icon-img" src="/assets/icons/network.svg" mode="aspectFit" />
             </view>
             <view class="service-text">
               <text class="service-name">知识图谱</text>
@@ -115,7 +115,7 @@
           <button class="service-card" bindtap="navigate" hover-class="service-card-hover">
             <view class="service-arrow">→</view>
             <view class="service-icon service-icon-green">
-              <text class="service-emoji">📍</text>
+              <image class="service-icon-img" src="/assets/icons/map-pin.svg" mode="aspectFit" />
             </view>
             <view class="service-text">
               <text class="service-name">地图导航</text>
@@ -127,7 +127,7 @@
           <button class="service-card" bindtap="toggleFavorite" hover-class="service-card-hover">
             <view class="service-arrow">★</view>
             <view class="service-icon service-icon-orange">
-              <text class="service-emoji">{{isFavorite ? '❤️' : '🤍'}}</text>
+              <image class="service-icon-img" src="{{isFavorite ? '/assets/icons/heart-filled.svg' : '/assets/icons/heart-outline.svg'}}" mode="aspectFit" />
             </view>
             <view class="service-text">
               <text class="service-name">{{isFavorite ? '已收藏' : '收藏景点'}}</text>
@@ -141,7 +141,7 @@
       <view class="time-card">
         <view class="time-row">
           <view class="time-left">
-            <text class="time-emoji">🕐</text>
+            <image class="time-icon" src="/assets/icons/clock.svg" mode="aspectFit" />
             <text class="time-label">开放时间</text>
           </view>
           <text class="time-value">{{building.openTime}}</text>
@@ -149,7 +149,7 @@
         <view class="divider"></view>
         <view class="time-row">
           <view class="time-left">
-            <text class="time-emoji">🎫</text>
+            <image class="time-icon" src="/assets/icons/ticket.svg" mode="aspectFit" />
             <text class="time-label">门票信息</text>
           </view>
           <text class="time-value time-value-free">{{building.ticketPrice}}</text>

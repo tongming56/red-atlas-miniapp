@@ -405,9 +405,9 @@
   color: #C2410C;
 }
 
-.service-emoji {
-  font-size: 48rpx;
-  filter: drop-shadow(0 2rpx 4rpx rgba(0, 0, 0, 0.1));
+.service-icon-img {
+  width: 56rpx;
+  height: 56rpx;
 }
 
 .service-text {
@@ -449,9 +449,11 @@
   gap: 24rpx;
 }
 
-.time-emoji {
-  font-size: 44rpx;
-  filter: drop-shadow(0 2rpx 6rpx rgba(0, 0, 0, 0.08));
+.time-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 8rpx;
+  color: #B71C1C;
 }
 
 .time-label {

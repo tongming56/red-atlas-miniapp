@@ -32,8 +32,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 24rpx;
-  padding-right: 24rpx;
+  padding-left: 8rpx;
+  padding-right: 8rpx;
   padding-bottom: 16rpx;
   z-index: 20;
 }

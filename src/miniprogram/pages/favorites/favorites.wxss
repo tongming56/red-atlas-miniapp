@@ -336,14 +336,13 @@
 /* 编辑模式底部操作栏 */
 .edit-toolbar {
   position: fixed;
-  bottom: 0;
+  bottom: 2cm;
   left: 0;
   right: 0;
   display: flex;
   align-items: center;
   gap: 24rpx;
   padding: 24rpx 32rpx;
-  padding-bottom: calc(24rpx + 120rpx);
   background-color: #FFFFFF;
   border-top: 1rpx solid #F3F4F6;
   box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);

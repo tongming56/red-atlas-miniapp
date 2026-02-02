@@ -23,22 +23,9 @@
   background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 40%, rgba(0,0,0,0.7) 100%);
 }
 
-/* ========== 顶部导航栏 ========== */
-.nav-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 20;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding-left: 16rpx;
-  padding-right: 16rpx;
-  padding-bottom: 16rpx;
-}
-
+/* ========== 顶部导航按钮 ========== */
 .nav-button {
+  position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,14 +34,15 @@
   padding: 0;
   width: 48rpx;
   height: 48rpx;
+  z-index: 20;
 }
 
 .nav-button-left {
-  /* 左侧按钮 */
+  left: 16rpx;
 }
 
 .nav-button-right {
-  /* 右侧按钮 */
+  right: 16rpx;
 }
 
 .nav-button-hover {

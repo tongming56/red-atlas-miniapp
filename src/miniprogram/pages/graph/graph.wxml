@@ -33,16 +33,23 @@
         <text class="graph-subtitle">{{graphNodeCount}} 个节点</text>
       </view>
 
-      <!-- Canvas 画布 (Canvas 2D 新版API) -->
-      <canvas
-        type="2d"
-        id="knowledgeGraph"
-        class="graph-canvas"
-        catchtouchstart="handleTouchStart"
-        catchtouchmove="handleTouchMove"
-        catchtouchend="handleTouchEnd"
-        disable-scroll="true"
-      ></canvas>
+      <!-- Canvas 画布容器 -->
+      <view class="canvas-container">
+        <canvas
+          type="2d"
+          id="knowledgeGraph"
+          class="graph-canvas"
+          catchtouchstart="handleTouchStart"
+          catchtouchmove="handleTouchMove"
+          catchtouchend="handleTouchEnd"
+          disable-scroll="true"
+        ></canvas>
+        <!-- 遮罩层：覆盖可能溢出的部分 -->
+        <cover-view class="canvas-mask-top"></cover-view>
+        <cover-view class="canvas-mask-bottom"></cover-view>
+        <cover-view class="canvas-mask-left"></cover-view>
+        <cover-view class="canvas-mask-right"></cover-view>
+      </view>
 
       <!-- 图例 -->
       <view class="graph-legend">

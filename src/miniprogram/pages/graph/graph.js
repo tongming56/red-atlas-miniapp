@@ -325,20 +325,34 @@ Page({
 
       // 计算周边节点位置（圆形分布）
       let angle = 0
-      const radius = 130 // 分布半径（调小避免溢出）
+      const radius = 100 // 分布半径（确保节点+文字都在Canvas内）
 
       // 添加人物节点
       if (building.relatedPeople && building.relatedPeople.length > 0) {
         building.relatedPeople.forEach((person, index) => {
           angle = (Math.PI * 2 / this.data.graphNodeCount) * (index + 1)
+
+          // 计算节点位置
+          let x = centerX + Math.cos(angle) * radius
+          let y = centerY + Math.sin(angle) * radius
+
+          // 边界约束（确保节点+文字都在Canvas内）
+          const nodeRadius = 25
+          const topSpace = 30    // 上方文字空间
+          const bottomSpace = 50 // 下方文字空间
+          const sideSpace = 60   // 左右文字空间
+
+          x = Math.max(sideSpace, Math.min(canvasWidth - sideSpace, x))
+          y = Math.max(topSpace, Math.min(canvasHeight - bottomSpace, y))
+
           nodes.push({
             type: 'people',
             typeLabel: '人物',
             label: person.name,
             role: person.role,
-            x: centerX + Math.cos(angle) * radius,
-            y: centerY + Math.sin(angle) * radius,
-            radius: 25,
+            x: x,
+            y: y,
+            radius: nodeRadius,
             color: '#3B82F6',
             icon: '👤'
           })
@@ -350,14 +364,28 @@ Page({
         const offset = (building.relatedPeople?.length || 0) + 1
         building.relatedEvents.forEach((event, index) => {
           angle = (Math.PI * 2 / this.data.graphNodeCount) * (offset + index)
+
+          // 计算节点位置
+          let x = centerX + Math.cos(angle) * radius
+          let y = centerY + Math.sin(angle) * radius
+
+          // 边界约束（确保节点+文字都在Canvas内）
+          const nodeRadius = 25
+          const topSpace = 30
+          const bottomSpace = 50
+          const sideSpace = 60
+
+          x = Math.max(sideSpace, Math.min(canvasWidth - sideSpace, x))
+          y = Math.max(topSpace, Math.min(canvasHeight - bottomSpace, y))
+
           nodes.push({
             type: 'event',
             typeLabel: '事件',
             label: event.title,
             date: event.date,
-            x: centerX + Math.cos(angle) * radius,
-            y: centerY + Math.sin(angle) * radius,
-            radius: 25,
+            x: x,
+            y: y,
+            radius: nodeRadius,
             color: '#10B981',
             icon: '📅'
           })
@@ -369,14 +397,28 @@ Page({
         const offset = (building.relatedPeople?.length || 0) + (building.relatedEvents?.length || 0) + 1
         building.relatedBuildings.forEach((bld, index) => {
           angle = (Math.PI * 2 / this.data.graphNodeCount) * (offset + index)
+
+          // 计算节点位置
+          let x = centerX + Math.cos(angle) * radius
+          let y = centerY + Math.sin(angle) * radius
+
+          // 边界约束（确保节点+文字都在Canvas内）
+          const nodeRadius = 25
+          const topSpace = 30
+          const bottomSpace = 50
+          const sideSpace = 60
+
+          x = Math.max(sideSpace, Math.min(canvasWidth - sideSpace, x))
+          y = Math.max(topSpace, Math.min(canvasHeight - bottomSpace, y))
+
           nodes.push({
             type: 'building',
             typeLabel: '建筑',
             label: bld.name,
             relation: bld.relation,
-            x: centerX + Math.cos(angle) * radius,
-            y: centerY + Math.sin(angle) * radius,
-            radius: 25,
+            x: x,
+            y: y,
+            radius: nodeRadius,
             color: '#F59E0B',
             icon: '🏛'
           })
@@ -532,11 +574,14 @@ Page({
     nodes[nodeIndex].x += deltaX
     nodes[nodeIndex].y += deltaY
 
-    // 边界限制
+    // 边界限制（与初始化时相同，确保节点+文字都在Canvas内）
     const node = nodes[nodeIndex]
-    const margin = node.radius + 10
-    node.x = Math.max(margin, Math.min(this.canvasWidth - margin, node.x))
-    node.y = Math.max(margin, Math.min(this.canvasHeight - margin, node.y))
+    const topSpace = 30
+    const bottomSpace = 50
+    const sideSpace = 60
+
+    node.x = Math.max(sideSpace, Math.min(this.canvasWidth - sideSpace, node.x))
+    node.y = Math.max(topSpace, Math.min(this.canvasHeight - bottomSpace, node.y))
 
     // 更新触摸位置（不调用setData）
     this.data.lastTouchX = x

@@ -301,6 +301,12 @@ Page({
     // 清空画布
     ctx.clearRect(0, 0, canvasWidth, canvasHeight)
 
+    // ⭐ 关键修复：设置裁剪区域，强制限制所有绘制内容在Canvas范围内
+    ctx.save()
+    ctx.beginPath()
+    ctx.rect(0, 0, canvasWidth, canvasHeight)
+    ctx.clip()
+
     // 画布中心点
     const centerX = canvasWidth / 2
     const centerY = canvasHeight / 2
@@ -522,6 +528,9 @@ Page({
       }
     })
 
+    // ⭐ 恢复上下文状态
+    ctx.restore()
+
     // Canvas 2D新API：绘制是同步的，无需调用draw()
   },
 
@@ -634,6 +643,12 @@ Page({
     ctx.fillStyle = '#0D0D0D'
     ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight)
 
+    // ⭐ 关键修复：设置裁剪区域
+    ctx.save()
+    ctx.beginPath()
+    ctx.rect(0, 0, this.canvasWidth, this.canvasHeight)
+    ctx.clip()
+
     // 1. 极简连接线 - 只绘制被拖动节点的连接线
     ctx.beginPath()
     ctx.strokeStyle = 'rgba(183, 28, 28, 0.15)'
@@ -677,6 +692,9 @@ Page({
       ctx.font = `${node.type === 'center' ? 20 : 16}px sans-serif`
       ctx.fillText(node.icon, node.x, node.y)
     }
+
+    // ⭐ 恢复上下文状态
+    ctx.restore()
 
     // Canvas 2D新API：同步绘制，无需draw()
   },

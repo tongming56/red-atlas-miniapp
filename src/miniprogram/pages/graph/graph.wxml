@@ -35,23 +35,15 @@
 
       <!-- Canvas 画布容器 -->
       <view class="canvas-container">
-        <!-- Canvas层 -->
-        <view class="canvas-wrapper">
-          <canvas
-            type="2d"
-            id="knowledgeGraph"
-            class="graph-canvas"
-            catchtouchstart="handleTouchStart"
-            catchtouchmove="handleTouchMove"
-            catchtouchend="handleTouchEnd"
-            disable-scroll="true"
-          ></canvas>
-        </view>
-        <!-- 实体遮罩层：强制裁剪Canvas边缘 -->
-        <view class="canvas-mask canvas-mask-top"></view>
-        <view class="canvas-mask canvas-mask-bottom"></view>
-        <view class="canvas-mask canvas-mask-left"></view>
-        <view class="canvas-mask canvas-mask-right"></view>
+        <canvas
+          type="2d"
+          id="knowledgeGraph"
+          class="graph-canvas"
+          catchtouchstart="handleTouchStart"
+          catchtouchmove="handleTouchMove"
+          catchtouchend="handleTouchEnd"
+          disable-scroll="true"
+        ></canvas>
       </view>
 
       <!-- 图例 -->

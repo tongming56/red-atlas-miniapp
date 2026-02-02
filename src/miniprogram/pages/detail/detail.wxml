@@ -6,10 +6,10 @@
 
     <!-- 顶部导航栏 -->
     <view class="nav-bar" style="padding-top: {{statusBarHeight + 10}}px;">
-      <button class="nav-button" bindtap="goBack" hover-class="nav-button-hover">
+      <button class="nav-button nav-button-left" bindtap="goBack" hover-class="nav-button-hover">
         <image class="nav-icon" src="/assets/icons/chevron-left-white.svg" mode="aspectFit" />
       </button>
-      <button class="nav-button" open-type="share" hover-class="nav-button-hover">
+      <button class="nav-button nav-button-right" open-type="share" hover-class="nav-button-hover">
         <image class="nav-icon" src="/assets/icons/share-white.svg" mode="aspectFit" />
       </button>
     </view>

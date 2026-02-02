@@ -21,7 +21,9 @@ Page({
     dragNodeIndex: -1,
     lastTouchX: 0,
     lastTouchY: 0,
-    lastDrawTime: 0 // 上次绘制时间（用于节流）
+    lastDrawTime: 0, // 上次绘制时间（用于节流）
+    // 图标图片
+    iconImages: {}
   },
 
   onLoad(options) {
@@ -327,7 +329,7 @@ Page({
         y: centerY,
         radius: 35,
         color: '#D41111',
-        icon: '🏛'
+        icon: '▲'
       })
 
       // 计算周边节点位置（圆形分布）
@@ -361,7 +363,7 @@ Page({
             y: y,
             radius: nodeRadius,
             color: '#3B82F6',
-            icon: '👤'
+            icon: '●'
           })
         })
       }
@@ -394,7 +396,7 @@ Page({
             y: y,
             radius: nodeRadius,
             color: '#10B981',
-            icon: '📅'
+            icon: '◆'
           })
         })
       }
@@ -427,7 +429,7 @@ Page({
             y: y,
             radius: nodeRadius,
             color: '#F59E0B',
-            icon: '🏛'
+            icon: '■'
           })
         })
       }
@@ -483,11 +485,29 @@ Page({
       ctx.stroke()
 
       // 绘制图标（中心位置）
-      ctx.font = `${node.type === 'center' ? 20 : 16}px sans-serif`
       ctx.fillStyle = '#FFFFFF'
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
-      ctx.fillText(node.icon, node.x, node.y)
+      ctx.strokeStyle = '#FFFFFF'
+      ctx.lineWidth = 2
+
+      const iconSize = node.type === 'center' ? 12 : 10
+
+      if (node.type === 'center' || node.type === 'building') {
+        // 建筑：三角形（屋顶形状）
+        ctx.beginPath()
+        ctx.moveTo(node.x, node.y - iconSize)
+        ctx.lineTo(node.x - iconSize, node.y + iconSize * 0.5)
+        ctx.lineTo(node.x + iconSize, node.y + iconSize * 0.5)
+        ctx.closePath()
+        ctx.fill()
+      } else if (node.type === 'people') {
+        // 人物：圆圈（头部）
+        ctx.beginPath()
+        ctx.arc(node.x, node.y, iconSize * 0.8, 0, Math.PI * 2)
+        ctx.fill()
+      } else if (node.type === 'event') {
+        // 事件：矩形（日历）
+        ctx.fillRect(node.x - iconSize * 0.7, node.y - iconSize * 0.7, iconSize * 1.4, iconSize * 1.4)
+      }
 
       // 绘制类型标签（节点上方）
       ctx.font = '10px sans-serif'
@@ -684,14 +704,32 @@ Page({
       ctx.stroke()
     }
 
-    // 3. 图标 - 最后统一绘制文字
+    // 3. 图标 - 绘制几何图标
     ctx.fillStyle = '#FFFFFF'
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
+    ctx.strokeStyle = '#FFFFFF'
+    ctx.lineWidth = 2
+
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i]
-      ctx.font = `${node.type === 'center' ? 20 : 16}px sans-serif`
-      ctx.fillText(node.icon, node.x, node.y)
+      const iconSize = node.type === 'center' ? 12 : 10
+
+      if (node.type === 'center' || node.type === 'building') {
+        // 建筑：三角形
+        ctx.beginPath()
+        ctx.moveTo(node.x, node.y - iconSize)
+        ctx.lineTo(node.x - iconSize, node.y + iconSize * 0.5)
+        ctx.lineTo(node.x + iconSize, node.y + iconSize * 0.5)
+        ctx.closePath()
+        ctx.fill()
+      } else if (node.type === 'people') {
+        // 人物：圆圈
+        ctx.beginPath()
+        ctx.arc(node.x, node.y, iconSize * 0.8, 0, Math.PI * 2)
+        ctx.fill()
+      } else if (node.type === 'event') {
+        // 事件：矩形
+        ctx.fillRect(node.x - iconSize * 0.7, node.y - iconSize * 0.7, iconSize * 1.4, iconSize * 1.4)
+      }
     }
 
     // ⭐ 恢复上下文状态

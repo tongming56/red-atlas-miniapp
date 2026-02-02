@@ -42,7 +42,7 @@
 }
 
 .nav-button-right {
-  right: 16rpx;
+  right: calc(16rpx - 1cm);
 }
 
 .nav-button-hover {

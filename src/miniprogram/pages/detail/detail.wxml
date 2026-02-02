@@ -10,7 +10,7 @@
         <image class="nav-icon" src="/assets/icons/chevron-left-white.svg" mode="aspectFit" />
       </button>
       <button class="nav-button" open-type="share" hover-class="nav-button-hover">
-        <text class="share-icon">⋯</text>
+        <image class="nav-icon" src="/assets/icons/share-white.svg" mode="aspectFit" />
       </button>
     </view>
 

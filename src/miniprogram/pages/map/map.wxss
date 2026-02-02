@@ -53,29 +53,6 @@
   background-color: #E5E7EB;
 }
 
-/* ========== 顶部导航栏 ========== */
-.nav-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-left: 32rpx;
-  padding-right: 32rpx;
-  padding-bottom: 16rpx;
-  z-index: 10;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, transparent 100%);
-}
-
-.nav-title {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #FFFFFF;
-  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
-}
-
 /* ========== 底部信息卡片 ========== */
 .info-panel {
   position: absolute;

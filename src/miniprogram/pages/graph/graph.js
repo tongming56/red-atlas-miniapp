@@ -32,8 +32,7 @@ Page({
   },
 
   onReady() {
-    // 初始化Canvas 2D
-    this.initCanvas2D()
+    // Canvas初始化移到数据加载完成后
   },
 
   /**
@@ -73,10 +72,8 @@ Page({
           canvasHeight: height
         })
 
-        // 绘制知识图谱
-        setTimeout(() => {
-          this.drawKnowledgeGraph()
-        }, 100)
+        // Canvas初始化完成后立即绘制（外层已延迟）
+        this.drawKnowledgeGraph()
       })
   },
 
@@ -270,6 +267,11 @@ Page({
       this.setData({
         building: graph,
         graphNodeCount: nodeCount
+      }, () => {
+        // 数据加载完成后，延迟初始化Canvas，确保页面先渲染
+        setTimeout(() => {
+          this.initCanvas2D()
+        }, 300)
       })
 
       // 动态设置导航栏标题为建筑名称

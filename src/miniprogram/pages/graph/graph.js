@@ -325,7 +325,7 @@ Page({
 
       // 计算周边节点位置（圆形分布）
       let angle = 0
-      const radius = 180 // 分布半径
+      const radius = 130 // 分布半径（调小避免溢出）
 
       // 添加人物节点
       if (building.relatedPeople && building.relatedPeople.length > 0) {

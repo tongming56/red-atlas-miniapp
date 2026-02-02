@@ -443,7 +443,7 @@ Page({
       ctx.beginPath()
       ctx.moveTo(nodes[0].x, nodes[0].y)
       ctx.lineTo(node.x, node.y)
-      ctx.strokeStyle = 'rgba(183, 28, 28, 0.2)'
+      ctx.strokeStyle = 'rgba(183, 28, 28, 0.6)'
       ctx.lineWidth = 2
       ctx.stroke()
     })
@@ -650,8 +650,8 @@ Page({
 
     // 1. 极简连接线 - 只绘制被拖动节点的连接线
     ctx.beginPath()
-    ctx.strokeStyle = 'rgba(183, 28, 28, 0.15)'
-    ctx.lineWidth = 1
+    ctx.strokeStyle = 'rgba(183, 28, 28, 0.5)'
+    ctx.lineWidth = 2
     if (dragNodeIndex === 0) {
       // 中心节点被拖动
       for (let i = 1; i < nodes.length; i++) {

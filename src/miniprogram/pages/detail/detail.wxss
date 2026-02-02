@@ -276,7 +276,7 @@
 
 .expand-button {
   margin-top: 16rpx;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8rpx;
   background: none;

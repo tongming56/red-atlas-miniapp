@@ -4,13 +4,14 @@
   <view class="header-image" style="background-image: url('{{building.image}}');">
     <view class="image-overlay"></view>
 
-    <!-- 顶部导航栏 -->
+    <!-- 顶部导航栏 - iOS风格胶囊 -->
     <view class="nav-bar" style="padding-top: {{statusBarHeight + 10}}px;">
-      <button class="nav-button" bindtap="goBack" hover-class="nav-button-hover">
-        <image class="nav-icon" src="/assets/icons/chevron-left-white.svg" mode="aspectFit" />
-      </button>
-      <view class="nav-right">
-        <button class="nav-button" open-type="share" hover-class="nav-button-hover">
+      <view class="nav-capsule">
+        <button class="capsule-button capsule-left" bindtap="goBack" hover-class="capsule-hover">
+          <image class="nav-icon" src="/assets/icons/chevron-left-white.svg" mode="aspectFit" />
+        </button>
+        <view class="capsule-divider"></view>
+        <button class="capsule-button capsule-right" open-type="share" hover-class="capsule-hover">
           <text class="share-icon">⋯</text>
         </button>
       </view>

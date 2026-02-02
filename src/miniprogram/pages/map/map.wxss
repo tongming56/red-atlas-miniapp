@@ -61,7 +61,7 @@
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding-left: 32rpx;
   padding-right: 32rpx;
   padding-bottom: 16rpx;
@@ -69,38 +69,11 @@
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, transparent 100%);
 }
 
-.nav-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(20rpx);
-  border: none;
-  padding: 0;
-}
-
-.nav-button-hover {
-  background-color: rgba(0, 0, 0, 0.4);
-  transform: scale(0.95);
-}
-
-.nav-icon {
-  width: 48rpx;
-  height: 48rpx;
-}
-
 .nav-title {
   font-size: 32rpx;
   font-weight: 600;
   color: #FFFFFF;
   text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
-}
-
-.nav-placeholder {
-  width: 80rpx;
 }
 
 /* ========== 底部信息卡片 ========== */

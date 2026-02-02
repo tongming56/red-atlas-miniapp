@@ -27,11 +27,7 @@
 
   <!-- 顶部导航栏 -->
   <view class="nav-bar" style="padding-top: {{statusBarHeight + 10}}px;">
-    <button class="nav-button" bindtap="goBack" hover-class="nav-button-hover">
-      <image class="nav-icon" src="/assets/icons/chevron-left-white.svg" mode="aspectFit" />
-    </button>
     <view class="nav-title">地图导航</view>
-    <view class="nav-placeholder"></view>
   </view>
 
   <!-- 底部信息卡片 -->

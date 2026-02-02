@@ -336,7 +336,7 @@
 /* 编辑模式底部操作栏 */
 .edit-toolbar {
   position: fixed;
-  bottom: 2cm;
+  bottom: 3cm;
   left: 0;
   right: 0;
   display: flex;

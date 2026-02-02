@@ -21,8 +21,7 @@
   padding-right: 32rpx;
   padding-bottom: 16rpx;
   z-index: 100;
-  background: linear-gradient(to bottom, rgba(183, 28, 28, 0.9) 0%, rgba(183, 28, 28, 0.7) 100%);
-  backdrop-filter: blur(20rpx);
+  background: transparent;
 }
 
 .nav-button {
@@ -32,7 +31,7 @@
   width: 80rpx;
   height: 80rpx;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(20rpx);
   border: none;
   padding: 0;
@@ -52,6 +51,7 @@
   font-size: 32rpx;
   font-weight: 600;
   color: #FFFFFF;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.5);
 }
 
 .nav-placeholder {
@@ -68,7 +68,7 @@
 
 /* ========== 关系网络图 (Obsidian风格) ========== */
 .relation-graph {
-  margin: 120rpx 40rpx 16rpx;
+  margin: 100rpx 40rpx 16rpx;
   padding: 24rpx;
   background: #1A1A1A;
   border-radius: 24rpx;

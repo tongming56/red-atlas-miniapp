@@ -28,19 +28,23 @@
     <view class="graph-legend">
       <view class="legend-item">
         <view class="legend-dot legend-center"></view>
-        <text class="legend-text">建筑 🏛</text>
+        <text class="legend-text">建筑</text>
+        <image class="legend-icon" src="/assets/icons/monument.svg" mode="aspectFit" />
       </view>
       <view class="legend-item">
         <view class="legend-dot legend-people"></view>
-        <text class="legend-text">人物 👤</text>
+        <text class="legend-text">人物</text>
+        <image class="legend-icon" src="/assets/icons/person.svg" mode="aspectFit" />
       </view>
       <view class="legend-item">
         <view class="legend-dot legend-event"></view>
-        <text class="legend-text">事件 📅</text>
+        <text class="legend-text">事件</text>
+        <image class="legend-icon" src="/assets/icons/calendar.svg" mode="aspectFit" />
       </view>
       <view class="legend-item">
         <view class="legend-dot legend-building"></view>
-        <text class="legend-text">关联 🏛</text>
+        <text class="legend-text">关联</text>
+        <image class="legend-icon" src="/assets/icons/monument.svg" mode="aspectFit" />
       </view>
     </view>
   </view>
@@ -50,7 +54,7 @@
     <!-- 相关人物 -->
     <view class="section" wx:if="{{building.relatedPeople && building.relatedPeople.length > 0}}">
       <view class="section-header">
-        <view class="section-icon">👤</view>
+        <image class="section-icon" src="/assets/icons/person.svg" mode="aspectFit" />
         <view class="section-title">相关人物</view>
         <view class="section-count">{{building.relatedPeople.length}}</view>
       </view>
@@ -69,7 +73,7 @@
     <!-- 重要事件 -->
     <view class="section" wx:if="{{building.relatedEvents && building.relatedEvents.length > 0}}">
       <view class="section-header">
-        <view class="section-icon">📅</view>
+        <image class="section-icon" src="/assets/icons/calendar.svg" mode="aspectFit" />
         <view class="section-title">重要事件</view>
         <view class="section-count">{{building.relatedEvents.length}}</view>
       </view>
@@ -87,7 +91,7 @@
     <!-- 关联建筑 -->
     <view class="section" wx:if="{{building.relatedBuildings && building.relatedBuildings.length > 0}}">
       <view class="section-header">
-        <view class="section-icon">🏛</view>
+        <image class="section-icon" src="/assets/icons/monument.svg" mode="aspectFit" />
         <view class="section-title">关联建筑</view>
         <view class="section-count">{{building.relatedBuildings.length}}</view>
       </view>
@@ -112,7 +116,7 @@
     <!-- 时间线 -->
     <view class="section" wx:if="{{building.timeline && building.timeline.length > 0}}">
       <view class="section-header">
-        <view class="section-icon">⏱</view>
+        <image class="section-icon" src="/assets/icons/timeline.svg" mode="aspectFit" />
         <view class="section-title">历史时间线</view>
       </view>
       <view class="timeline">

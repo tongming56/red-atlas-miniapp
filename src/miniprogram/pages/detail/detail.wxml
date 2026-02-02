@@ -24,7 +24,7 @@
   </view>
 
   <!-- 主内容区域（圆角卡片） -->
-  <scroll-view class="content-wrapper" scroll-y>
+  <view class="content-wrapper">
     <view class="content-inner">
       <!-- 地址信息卡片 -->
       <view class="info-card">
@@ -159,5 +159,5 @@
       <!-- 底部占位 -->
       <view class="bottom-placeholder"></view>
     </view>
-  </scroll-view>
+  </view>
 </view>

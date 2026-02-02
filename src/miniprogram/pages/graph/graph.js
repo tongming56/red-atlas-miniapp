@@ -3,7 +3,6 @@ const app = getApp()
 
 Page({
   data: {
-    statusBarHeight: 0,
     building: {
       id: 1,
       name: '建筑名称',
@@ -26,11 +25,6 @@ Page({
   },
 
   onLoad(options) {
-    // 获取状态栏高度
-    this.setData({
-      statusBarHeight: app.globalData.statusBarHeight || 20
-    })
-
     // 根据ID加载建筑知识图谱
     if (options.id) {
       this.loadKnowledgeGraph(options.id)
@@ -276,6 +270,11 @@ Page({
       this.setData({
         building: graph,
         graphNodeCount: nodeCount
+      })
+
+      // 动态设置导航栏标题为建筑名称
+      wx.setNavigationBarTitle({
+        title: graph.name
       })
     } else {
       wx.showToast({
@@ -707,12 +706,5 @@ Page({
     wx.redirectTo({
       url: `/pages/detail/detail?id=${id}`
     })
-  },
-
-  /**
-   * 返回上一页
-   */
-  goBack() {
-    wx.navigateBack()
   }
 })

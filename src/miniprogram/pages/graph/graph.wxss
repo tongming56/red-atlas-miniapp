@@ -8,56 +8,6 @@
   overflow: hidden;
 }
 
-/* ========== 顶部导航栏 ========== */
-.nav-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 32rpx;
-  padding-right: 32rpx;
-  padding-bottom: 16rpx;
-  z-index: 100;
-  background: transparent;
-}
-
-.nav-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(20rpx);
-  border: none;
-  padding: 0;
-}
-
-.nav-button-hover {
-  background-color: rgba(255, 255, 255, 0.3);
-  transform: scale(0.95);
-}
-
-.nav-icon {
-  width: 48rpx;
-  height: 48rpx;
-}
-
-.nav-title {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #FFFFFF;
-  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.5);
-}
-
-.nav-placeholder {
-  width: 80rpx;
-}
-
 /* ========== 滚动内容区域 ========== */
 .content-scroll {
   flex: 1;
@@ -68,7 +18,7 @@
 
 /* ========== 关系网络图 (Obsidian风格) ========== */
 .relation-graph {
-  margin: 100rpx 40rpx 16rpx;
+  margin: 32rpx 40rpx 16rpx;
   padding: 24rpx;
   background: #1A1A1A;
   border-radius: 24rpx;

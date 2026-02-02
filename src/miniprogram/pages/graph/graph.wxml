@@ -1,14 +1,5 @@
 <!-- 知识图谱页 -->
 <view class="graph-container">
-  <!-- 顶部导航栏 -->
-  <view class="nav-bar" style="padding-top: {{statusBarHeight + 10}}px;">
-    <button class="nav-button" bindtap="goBack" hover-class="nav-button-hover">
-      <image class="nav-icon" src="/assets/icons/chevron-left-white.svg" mode="aspectFit" />
-    </button>
-    <view class="nav-title">{{building.name}}</view>
-    <view class="nav-placeholder"></view>
-  </view>
-
   <!-- 关系网络图 (Obsidian风格) - 固定区域，不随页面滚动 -->
   <view class="relation-graph">
     <view class="graph-header">

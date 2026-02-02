@@ -74,9 +74,46 @@ Page({
           canvasHeight: height
         })
 
-        // Canvas初始化完成后立即绘制（外层已延迟）
-        this.drawKnowledgeGraph()
+        // 加载图标图片
+        this.loadIconImages(canvas)
       })
+  },
+
+  /**
+   * 加载SVG图标图片
+   */
+  loadIconImages(canvas) {
+    const iconPaths = {
+      monument: '/assets/icons/monument.svg',
+      person: '/assets/icons/person.svg',
+      calendar: '/assets/icons/calendar.svg'
+    }
+
+    const iconImages = {}
+    let loadedCount = 0
+    const totalCount = Object.keys(iconPaths).length
+
+    Object.keys(iconPaths).forEach(key => {
+      const img = canvas.createImage()
+      img.onload = () => {
+        iconImages[key] = img
+        loadedCount++
+        if (loadedCount === totalCount) {
+          // 所有图标加载完成
+          this.iconImages = iconImages
+          this.drawKnowledgeGraph()
+        }
+      }
+      img.onerror = (e) => {
+        console.error(`图标加载失败: ${key}`, e)
+        loadedCount++
+        if (loadedCount === totalCount) {
+          this.iconImages = iconImages
+          this.drawKnowledgeGraph()
+        }
+      }
+      img.src = iconPaths[key]
+    })
   },
 
   /**
@@ -329,7 +366,7 @@ Page({
         y: centerY,
         radius: 35,
         color: '#D41111',
-        icon: '▲'
+        iconType: 'monument'
       })
 
       // 计算周边节点位置（圆形分布）
@@ -363,7 +400,7 @@ Page({
             y: y,
             radius: nodeRadius,
             color: '#3B82F6',
-            icon: '●'
+            iconType: 'person'
           })
         })
       }
@@ -396,7 +433,7 @@ Page({
             y: y,
             radius: nodeRadius,
             color: '#10B981',
-            icon: '◆'
+            iconType: 'calendar'
           })
         })
       }
@@ -429,7 +466,7 @@ Page({
             y: y,
             radius: nodeRadius,
             color: '#F59E0B',
-            icon: '■'
+            iconType: 'monument'
           })
         })
       }
@@ -484,29 +521,27 @@ Page({
       ctx.lineWidth = 3
       ctx.stroke()
 
-      // 绘制图标（中心位置）
-      ctx.fillStyle = '#FFFFFF'
-      ctx.strokeStyle = '#FFFFFF'
-      ctx.lineWidth = 2
+      // 绘制SVG图标
+      if (this.iconImages) {
+        const iconSize = node.type === 'center' ? 24 : 20
+        let iconImg = null
 
-      const iconSize = node.type === 'center' ? 12 : 10
+        if (node.type === 'center' || node.type === 'building') {
+          iconImg = this.iconImages.monument
+        } else if (node.type === 'people') {
+          iconImg = this.iconImages.person
+        } else if (node.type === 'event') {
+          iconImg = this.iconImages.calendar
+        }
 
-      if (node.type === 'center' || node.type === 'building') {
-        // 建筑：三角形（屋顶形状）
-        ctx.beginPath()
-        ctx.moveTo(node.x, node.y - iconSize)
-        ctx.lineTo(node.x - iconSize, node.y + iconSize * 0.5)
-        ctx.lineTo(node.x + iconSize, node.y + iconSize * 0.5)
-        ctx.closePath()
-        ctx.fill()
-      } else if (node.type === 'people') {
-        // 人物：圆圈（头部）
-        ctx.beginPath()
-        ctx.arc(node.x, node.y, iconSize * 0.8, 0, Math.PI * 2)
-        ctx.fill()
-      } else if (node.type === 'event') {
-        // 事件：矩形（日历）
-        ctx.fillRect(node.x - iconSize * 0.7, node.y - iconSize * 0.7, iconSize * 1.4, iconSize * 1.4)
+        if (iconImg) {
+          ctx.save()
+          // 设置白色滤镜效果（SVG是currentColor，需要设置为白色）
+          ctx.globalAlpha = 1
+          ctx.filter = 'brightness(0) invert(1)'
+          ctx.drawImage(iconImg, node.x - iconSize / 2, node.y - iconSize / 2, iconSize, iconSize)
+          ctx.restore()
+        }
       }
 
       // 绘制类型标签（节点上方）
@@ -704,31 +739,28 @@ Page({
       ctx.stroke()
     }
 
-    // 3. 图标 - 绘制几何图标
-    ctx.fillStyle = '#FFFFFF'
-    ctx.strokeStyle = '#FFFFFF'
-    ctx.lineWidth = 2
+    // 3. 图标 - 绘制SVG图标
+    if (this.iconImages) {
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i]
+        const iconSize = node.type === 'center' ? 24 : 20
+        let iconImg = null
 
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i]
-      const iconSize = node.type === 'center' ? 12 : 10
+        if (node.type === 'center' || node.type === 'building') {
+          iconImg = this.iconImages.monument
+        } else if (node.type === 'people') {
+          iconImg = this.iconImages.person
+        } else if (node.type === 'event') {
+          iconImg = this.iconImages.calendar
+        }
 
-      if (node.type === 'center' || node.type === 'building') {
-        // 建筑：三角形
-        ctx.beginPath()
-        ctx.moveTo(node.x, node.y - iconSize)
-        ctx.lineTo(node.x - iconSize, node.y + iconSize * 0.5)
-        ctx.lineTo(node.x + iconSize, node.y + iconSize * 0.5)
-        ctx.closePath()
-        ctx.fill()
-      } else if (node.type === 'people') {
-        // 人物：圆圈
-        ctx.beginPath()
-        ctx.arc(node.x, node.y, iconSize * 0.8, 0, Math.PI * 2)
-        ctx.fill()
-      } else if (node.type === 'event') {
-        // 事件：矩形
-        ctx.fillRect(node.x - iconSize * 0.7, node.y - iconSize * 0.7, iconSize * 1.4, iconSize * 1.4)
+        if (iconImg) {
+          ctx.save()
+          ctx.globalAlpha = 1
+          ctx.filter = 'brightness(0) invert(1)'
+          ctx.drawImage(iconImg, node.x - iconSize / 2, node.y - iconSize / 2, iconSize, iconSize)
+          ctx.restore()
+        }
       }
     }
 

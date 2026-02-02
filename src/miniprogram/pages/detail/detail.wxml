@@ -17,7 +17,7 @@
       </view>
       <text class="title">{{building.name}}</text>
       <view class="view-count">
-        <image class="eye-icon" src="/assets/icons/eye.svg" mode="aspectFit" />
+        <text class="eye-icon">👁</text>
         <text>{{building.views}} 次浏览</text>
       </view>
     </view>
@@ -55,7 +55,7 @@
           </view>
           <view class="info-col">
             <view class="icon-box icon-red">
-              <image class="info-icon" src="/assets/icons/building.svg" mode="aspectFit" />
+              <text class="building-icon">🏛</text>
             </view>
             <view class="info-content-small">
               <text class="info-label">城市</text>

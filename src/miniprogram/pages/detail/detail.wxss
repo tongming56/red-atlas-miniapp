@@ -38,7 +38,7 @@
 }
 
 .nav-button-left {
-  left: 3cm;
+  left: -3cm;
 }
 
 .nav-button-right {
